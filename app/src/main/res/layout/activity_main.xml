@@ -1,4 +1,3 @@
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,5 +11,5 @@
         android:padding="20dp"
         app:progress="20"
         android:layout_width="match_parent"
-        style="@style/NumberProgressBar_Passing_Green"/>
+        style="@style/CircularBarPager_Default"/>
 </LinearLayout>

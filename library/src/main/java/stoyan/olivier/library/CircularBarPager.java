@@ -14,7 +14,7 @@ import android.view.View;
 /**
  * Created by stoyan and olivier on 12/9/14.
  */
-public class CircularBarPager  extends View {
+public class CircularBarPager extends View {
 
     private Context mContext;
 
@@ -31,32 +31,22 @@ public class CircularBarPager  extends View {
     /**
      * the progress area bar color
      */
-    private int mReachedBarColor;
+    private int mReachedArcColor;
 
     /**
      * the bar unreached area color.
      */
-    private int mUnreachedBarColor;
-
-    /**
-     * the progress text color.
-     */
-    private int mTextColor;
-
-    /**
-     * the progress text size
-     */
-    private float mTextSize;
+    private int mUnreachedArcColor;
 
     /**
      * the height of the reached area
      */
-    private float mReachedBarHeight;
+    private float mReachedArcWidth;
 
     /**
      * the height of the unreached area
      */
-    private float mUnreachedBarHeight;
+    private float mUnreachedArcWidth;
 
     /**
      * the suffix of the number.
@@ -69,20 +59,15 @@ public class CircularBarPager  extends View {
     private String mPrefix = "";
 
 
-    private final int default_text_color = Color.rgb(66, 145, 241);
     private final int default_reached_color = Color.rgb(66,145,241);
     private final int default_unreached_color = Color.rgb(204, 204, 204);
-    private final float default_progress_text_offset;
-    private final float default_text_size;
-    private final float default_reached_bar_height;
-    private final float default_unreached_bar_height;
+    private final float default_reached_arc_width;
+    private final float default_unreached_arc_width;
 
     /**
      * for save and restore instance of progressbar.
      */
     private static final String INSTANCE_STATE = "saved_instance";
-    private static final String INSTANCE_TEXT_COLOR = "text_color";
-    private static final String INSTANCE_TEXT_SIZE = "text_size";
     private static final String INSTANCE_REACHED_BAR_HEIGHT = "reached_bar_height";
     private static final String INSTANCE_REACHED_BAR_COLOR = "reached_bar_color";
     private static final String INSTANCE_UNREACHED_BAR_HEIGHT = "unreached_bar_height";
@@ -91,10 +76,6 @@ public class CircularBarPager  extends View {
     private static final String INSTANCE_PROGRESS = "progress";
     private static final String INSTANCE_SUFFIX = "suffix";
     private static final String INSTANCE_PREFIX = "prefix";
-    private static final String INSTANCE_TEXT_VISBILITY = "text_visibility";
-
-    private static final int PROGRESS_TEXT_VISIBLE = 0;
-    private static final int PROGRESS_TEXT_INVISIBLE = 1;
 
 
 
@@ -104,21 +85,6 @@ public class CircularBarPager  extends View {
     private float mDrawTextWidth;
 
     /**
-     * the drawn text start
-     */
-    private float mDrawTextStart;
-
-    /**
-     *the drawn text end
-     */
-    private float mDrawTextEnd;
-
-    /**
-     * the text that to be drawn in onDraw()
-     */
-    private String mCurrentDrawText;
-
-    /**
      * the Paint of the reached area.
      */
     private Paint mReachedBarPaint;
@@ -126,10 +92,6 @@ public class CircularBarPager  extends View {
      * the Painter of the unreached area.
      */
     private Paint mUnreachedBarPaint;
-    /**
-     * the Painter of the progress text.
-     */
-    private Paint mTextPaint;
 
     /**
      * Unreached Bar area to draw rect.
@@ -141,31 +103,18 @@ public class CircularBarPager  extends View {
     private RectF mReachedRectF = new RectF(0,0,0,0);
 
     /**
-     * the progress text offset.
-     */
-    private float mOffset;
-
-    /**
      * determine if need to draw unreached area
      */
     private boolean mDrawUnreachedBar = true;
 
     private boolean mDrawReachedBar = true;
 
-    private boolean mIfDrawText = true;
-
-    public enum ProgressTextVisibility{
-        Visible,Invisible
-    };
-
-
-
     public CircularBarPager(Context context) {
         this(context, null);
     }
 
     public CircularBarPager(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.numberProgressBarStyle);
+        this(context, attrs, R.attr.CircularBarPagerStyle);
     }
 
     public CircularBarPager(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -173,28 +122,18 @@ public class CircularBarPager  extends View {
 
         mContext = context;
 
-        default_reached_bar_height = dp2px(1.5f);
-        default_unreached_bar_height = dp2px(1.0f);
-        default_text_size = sp2px(10);
-        default_progress_text_offset = dp2px(3.0f);
+        default_reached_arc_width = dp2px(1.5f);
+        default_unreached_arc_width = dp2px(1.0f);
 
         //load styled attributes.
         final TypedArray attributes = context.getTheme().obtainStyledAttributes(attrs, R.styleable.CircularBarPager,
                 defStyleAttr, 0);
 
-        mReachedBarColor = attributes.getColor(R.styleable.CircularBarPager_progress_reached_color, default_reached_color);
-        mUnreachedBarColor = attributes.getColor(R.styleable.CircularBarPager_progress_unreached_color,default_unreached_color);
-        mTextColor = attributes.getColor(R.styleable.CircularBarPager_progress_text_color,default_text_color);
-        mTextSize = attributes.getDimension(R.styleable.CircularBarPager_progress_text_size, default_text_size);
+        mReachedArcColor = attributes.getColor(R.styleable.CircularBarPager_progress_reached_color, default_reached_color);
+        mUnreachedArcColor = attributes.getColor(R.styleable.CircularBarPager_progress_unreached_color,default_unreached_color);
 
-        mReachedBarHeight = attributes.getDimension(R.styleable.CircularBarPager_progress_reached_bar_height,default_reached_bar_height);
-        mUnreachedBarHeight = attributes.getDimension(R.styleable.CircularBarPager_progress_unreached_bar_height,default_unreached_bar_height);
-        mOffset = attributes.getDimension(R.styleable.CircularBarPager_progress_text_offset,default_progress_text_offset);
-
-        int textVisible = attributes.getInt(R.styleable.CircularBarPager_progress_text_visibility,PROGRESS_TEXT_VISIBLE);
-        if(textVisible != PROGRESS_TEXT_VISIBLE){
-            mIfDrawText = false;
-        }
+        mReachedArcWidth = attributes.getDimension(R.styleable.CircularBarPager_progress_reached_arc_width, default_reached_arc_width);
+        mUnreachedArcWidth = attributes.getDimension(R.styleable.CircularBarPager_progress_unreached_arc_width, default_unreached_arc_width);
 
         setProgress(attributes.getInt(R.styleable.CircularBarPager_progress,0));
         setMax(attributes.getInt(R.styleable.CircularBarPager_max, 100));
@@ -207,12 +146,12 @@ public class CircularBarPager  extends View {
 
     @Override
     protected int getSuggestedMinimumWidth() {
-        return (int)mTextSize;
+        return Math.max((int) mReachedArcWidth,(int) mUnreachedArcWidth);
     }
 
     @Override
     protected int getSuggestedMinimumHeight() {
-        return Math.max((int)mTextSize,Math.max((int)mReachedBarHeight,(int)mUnreachedBarHeight));
+        return Math.max((int) mReachedArcWidth,(int) mUnreachedArcWidth);
     }
 
     @Override
@@ -244,11 +183,7 @@ public class CircularBarPager  extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if(mIfDrawText){
-            calculateDrawRectF();
-        }else{
-            calculateDrawRectFWithoutProgressText();
-        }
+        calculateDrawRectFWithoutProgressText();
 
         if(mDrawReachedBar){
 //            canvas.drawRect(mReachedRectF,mReachedBarPaint);
@@ -260,8 +195,6 @@ public class CircularBarPager  extends View {
             canvas.drawArc(getArcRect(mUnreachedRectF), 180f, 360f, false, mUnreachedBarPaint);
         }
 
-        if(mIfDrawText)
-            canvas.drawText(mCurrentDrawText,mDrawTextStart,mDrawTextEnd,mTextPaint);
     }
 
     private RectF getArcRect(RectF rect){
@@ -281,87 +214,32 @@ public class CircularBarPager  extends View {
 
     private void initializePainters(){
         mReachedBarPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mReachedBarPaint.setColor(mReachedBarColor);
+        mReachedBarPaint.setColor(mReachedArcColor);
 
         mUnreachedBarPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mUnreachedBarPaint.setColor(mUnreachedBarColor);
+        mUnreachedBarPaint.setColor(mUnreachedArcColor);
 
-        mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint.setColor(mTextColor);
-        mTextPaint.setTextSize(mTextSize);
     }
 
 
     private void calculateDrawRectFWithoutProgressText(){
         mReachedRectF.left = getPaddingLeft();
-        mReachedRectF.top = getHeight()/2.0f - mReachedBarHeight / 2.0f;
+        mReachedRectF.top = getHeight()/2.0f - mReachedArcWidth / 2.0f;
         mReachedRectF.right = (getWidth() - getPaddingLeft() - getPaddingRight() )/(getMax()*1.0f) * getProgress() + getPaddingLeft();
-        mReachedRectF.bottom = getHeight()/2.0f + mReachedBarHeight / 2.0f;
+        mReachedRectF.bottom = getHeight()/2.0f + mReachedArcWidth / 2.0f;
 
         mUnreachedRectF.left = mReachedRectF.right;
         mUnreachedRectF.right = getWidth() - getPaddingRight();
-        mUnreachedRectF.top = getHeight()/2.0f +  - mUnreachedBarHeight / 2.0f;
-        mUnreachedRectF.bottom = getHeight()/2.0f  + mUnreachedBarHeight / 2.0f;
-    }
-
-    private void calculateDrawRectF(){
-
-        mCurrentDrawText = String.format("%d" ,getProgress()*100/getMax());
-        mCurrentDrawText = mPrefix + mCurrentDrawText + mSuffix;
-        mDrawTextWidth = mTextPaint.measureText(mCurrentDrawText);
-
-        if(getProgress() == 0){
-            mDrawReachedBar = false;
-            mDrawTextStart = getPaddingLeft();
-        }else{
-            mDrawReachedBar = true;
-            mReachedRectF.left = getPaddingLeft();
-            mReachedRectF.top = getHeight()/2.0f - mReachedBarHeight / 2.0f;
-            mReachedRectF.right = (getWidth() - getPaddingLeft() - getPaddingRight() )/(getMax()*1.0f) * getProgress() - mOffset + getPaddingLeft();
-            mReachedRectF.bottom = getHeight()/2.0f + mReachedBarHeight / 2.0f;
-            mDrawTextStart = (mReachedRectF.right + mOffset);
-        }
-
-        mDrawTextEnd =  (int) ((getHeight() / 2.0f) - ((mTextPaint.descent() + mTextPaint.ascent()) / 2.0f)) ;
-
-        if((mDrawTextStart + mDrawTextWidth )>= getWidth() - getPaddingRight()){
-            mDrawTextStart = getWidth() - getPaddingRight() - mDrawTextWidth;
-            mReachedRectF.right = mDrawTextStart - mOffset;
-        }
-
-        float unreachedBarStart = mDrawTextStart + mDrawTextWidth + mOffset;
-        if(unreachedBarStart >= getWidth() - getPaddingRight()){
-            mDrawUnreachedBar = false;
-        }else{
-            mDrawUnreachedBar = true;
-            mUnreachedRectF.left = unreachedBarStart;
-            mUnreachedRectF.right = getWidth() - getPaddingRight();
-            mUnreachedRectF.top = getHeight()/2.0f +  - mUnreachedBarHeight / 2.0f;
-            mUnreachedRectF.bottom = getHeight()/2.0f  + mUnreachedBarHeight / 2.0f;
-        }
-    }
-    /**
-     * get progress text color
-     * @return progress text color
-     */
-    public int getTextColor() {
-        return mTextColor;
-    }
-
-    /**
-     * get progress text size
-     * @return progress text size
-     */
-    public float getProgressTextSize() {
-        return mTextSize;
+        mUnreachedRectF.top = getHeight()/2.0f +  -mUnreachedArcWidth / 2.0f;
+        mUnreachedRectF.bottom = getHeight()/2.0f  + mUnreachedArcWidth / 2.0f;
     }
 
     public int getUnreachedBarColor() {
-        return mUnreachedBarColor;
+        return mUnreachedArcColor;
     }
 
     public int getReachedBarColor() {
-        return mReachedBarColor;
+        return mReachedArcColor;
     }
 
     public int getProgress() {
@@ -373,43 +251,31 @@ public class CircularBarPager  extends View {
     }
 
     public float getReachedBarHeight(){
-        return mReachedBarHeight;
+        return mReachedArcWidth;
     }
 
     public float getUnreachedBarHeight(){
-        return mUnreachedBarHeight;
-    }
-
-    public void setProgressTextSize(float TextSize) {
-        this.mTextSize = TextSize;
-        mTextPaint.setTextSize(mTextSize);
-        invalidate();
-    }
-
-    public void setProgressTextColor(int TextColor) {
-        this.mTextColor = TextColor;
-        mTextPaint.setColor(mTextColor);
-        invalidate();
+        return mUnreachedArcWidth;
     }
 
     public void setUnreachedBarColor(int BarColor) {
-        this.mUnreachedBarColor = BarColor;
-        mUnreachedBarPaint.setColor(mReachedBarColor);
+        this.mUnreachedArcColor = BarColor;
+        mUnreachedBarPaint.setColor(mReachedArcColor);
         invalidate();
     }
 
     public void setReachedBarColor(int ProgressColor) {
-        this.mReachedBarColor = ProgressColor;
-        mReachedBarPaint.setColor(mReachedBarColor);
+        this.mReachedArcColor = ProgressColor;
+        mReachedBarPaint.setColor(mReachedArcColor);
         invalidate();
     }
 
     public void setReachedBarHeight(float height){
-        mReachedBarHeight = height;
+        mReachedArcWidth = height;
     }
 
     public void setUnreachedBarHeight(float height){
-        mUnreachedBarHeight = height;
+        mUnreachedArcWidth = height;
     }
 
     public void setMax(int Max) {
@@ -460,8 +326,6 @@ public class CircularBarPager  extends View {
     protected Parcelable onSaveInstanceState() {
         final Bundle bundle = new Bundle();
         bundle.putParcelable(INSTANCE_STATE,super.onSaveInstanceState());
-        bundle.putInt(INSTANCE_TEXT_COLOR,getTextColor());
-        bundle.putFloat(INSTANCE_TEXT_SIZE, getProgressTextSize());
         bundle.putFloat(INSTANCE_REACHED_BAR_HEIGHT,getReachedBarHeight());
         bundle.putFloat(INSTANCE_UNREACHED_BAR_HEIGHT,getUnreachedBarHeight());
         bundle.putInt(INSTANCE_REACHED_BAR_COLOR,getReachedBarColor());
@@ -470,7 +334,6 @@ public class CircularBarPager  extends View {
         bundle.putInt(INSTANCE_PROGRESS,getProgress());
         bundle.putString(INSTANCE_SUFFIX,getSuffix());
         bundle.putString(INSTANCE_PREFIX,getPrefix());
-        bundle.putBoolean(INSTANCE_TEXT_VISBILITY, getProgressTextVisibility());
         return bundle;
     }
 
@@ -478,18 +341,15 @@ public class CircularBarPager  extends View {
     protected void onRestoreInstanceState(Parcelable state) {
         if(state instanceof Bundle){
             final Bundle bundle = (Bundle)state;
-            mTextColor = bundle.getInt(INSTANCE_TEXT_COLOR);
-            mTextSize = bundle.getFloat(INSTANCE_TEXT_SIZE);
-            mReachedBarHeight = bundle.getFloat(INSTANCE_REACHED_BAR_HEIGHT);
-            mUnreachedBarHeight = bundle.getFloat(INSTANCE_UNREACHED_BAR_HEIGHT);
-            mReachedBarColor = bundle.getInt(INSTANCE_REACHED_BAR_COLOR);
-            mUnreachedBarColor = bundle.getInt(INSTANCE_UNREACHED_BAR_COLOR);
+            mReachedArcWidth = bundle.getFloat(INSTANCE_REACHED_BAR_HEIGHT);
+            mUnreachedArcWidth = bundle.getFloat(INSTANCE_UNREACHED_BAR_HEIGHT);
+            mReachedArcColor = bundle.getInt(INSTANCE_REACHED_BAR_COLOR);
+            mUnreachedArcColor = bundle.getInt(INSTANCE_UNREACHED_BAR_COLOR);
             initializePainters();
             setMax(bundle.getInt(INSTANCE_MAX));
             setProgress(bundle.getInt(INSTANCE_PROGRESS));
             setPrefix(bundle.getString(INSTANCE_PREFIX));
             setSuffix(bundle.getString(INSTANCE_SUFFIX));
-            setProgressTextVisibility(bundle.getBoolean(INSTANCE_TEXT_VISBILITY) ? ProgressTextVisibility.Visible : ProgressTextVisibility.Invisible);
             super.onRestoreInstanceState(bundle.getParcelable(INSTANCE_STATE));
             return;
         }
@@ -505,15 +365,5 @@ public class CircularBarPager  extends View {
         final float scale = getResources().getDisplayMetrics().scaledDensity;
         return sp * scale;
     }
-
-    public void setProgressTextVisibility(ProgressTextVisibility visibility){
-        mIfDrawText = visibility == ProgressTextVisibility.Visible;
-        invalidate();
-    }
-
-    public boolean getProgressTextVisibility() {
-        return mIfDrawText;
-    }
-
 }
 

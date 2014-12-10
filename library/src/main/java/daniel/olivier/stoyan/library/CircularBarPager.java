@@ -1,6 +1,6 @@
 package daniel.olivier.stoyan.library;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -12,8 +12,10 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import com.daimajia.easing.Glider;
+import com.daimajia.easing.Skill;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ObjectAnimator;
 
 import stoyan.olivier.library.R;
 
@@ -32,7 +34,7 @@ public class CircularBarPager extends View {
     /**
      * current progress, can not exceed the max progress.
      */
-    private float mProgress = 0;
+    private float progress = 0;
 
     /**
      * the progress area bar color
@@ -185,7 +187,7 @@ public class CircularBarPager extends View {
         if(mDrawReachedBar){
             canvas.drawArc(mReachedArcRectF, mProgressSweep.reachedStart, mProgressSweep.reachedSweep, false, mReachedBarPaint);
             canvas.drawArc(mUnReachedArcRectF, mProgressSweep.unReachedStart, mProgressSweep.unRreachedSweep, false, mUnreachedBarPaint);
-//            canvas.drawLine(mReachedArcRectF.centerX(), mReachedArcRectF.top - mReachedArcWidth, mReachedArcRectF.centerX() + 1, mReachedArcRectF.top, mReachedBarPaint);
+            canvas.drawLine(mReachedArcRectF.centerX(), mReachedArcRectF.top - mReachedArcWidth, mReachedArcRectF.centerX() + 1, mReachedArcRectF.top + mReachedArcWidth*1.5f, mUnreachedBarPaint);
         }
     }
 
@@ -194,27 +196,14 @@ public class CircularBarPager extends View {
      *
      * @param start    The value to start from, between 0-100
      * @param end      The value to set it to, between 0-100
-     * @param activity The activity to use for the animation
+     * @param duration The the time to run the animation over
      */
-    public void animateProgress(final int start, final int end, final Activity activity) {
-        setProgress(start);
-        final Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProgressSweep.increment(1);
-                        if (mProgress >= end) {
-                            setProgress(end);
-                            timer.cancel();
-                            timer.purge();
-                        }
-                    }
-                });
-            }
-        }, 333, 25);
+    public void animateProgress(int start,int end, int duration) {
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(Glider.glide(Skill.QuadEaseInOut, duration, ObjectAnimator.ofFloat(this, "progress", start, end)));
+
+        set.setDuration(duration);
+        set.start();
     }
 
     /**
@@ -274,7 +263,7 @@ public class CircularBarPager extends View {
     }
 
     public float getProgress() {
-        return mProgress;
+        return progress;
     }
 
     public int getMax() {
@@ -343,9 +332,9 @@ public class CircularBarPager extends View {
 
     public void setProgress(float Progress) {
         if(Progress <= getMax()  && Progress >= 0){
-            this.mProgress = Progress;
+            this.progress = Progress;
             if(mProgressSweep == null){
-                this.mProgressSweep = new ProgressSweep(mProgress);
+                this.mProgressSweep = new ProgressSweep(progress);
             }else{
                 mProgressSweep.enforceBounds();
                 mProgressSweep.updateAngles();
@@ -412,31 +401,24 @@ public class CircularBarPager extends View {
 
 
         public ProgressSweep(float progress){
-            mProgress = progress;
+            CircularBarPager.this.progress = progress;
             enforceBounds();
             updateAngles();
         }
 
         public void enforceBounds() {
-            if(mProgress < 0 ){
-                mProgress = 0;
+            if(progress < 0 ){
+                progress = 0;
             }
-            if(mProgress > mMax){
-                mProgress = mMax;
+            if(progress > mMax){
+                progress = mMax;
             }
         }
 
-        public void updateAngles() { //<<<< fix this
-            reachedSweep = mProgress/mMax * 360f;
-            unReachedStart = 270f + mProgress/mMax * 360f;
-            unRreachedSweep = 360f - (mProgress/mMax * 360f);
-        }
-
-        public void increment(int val){
-            mProgress += val;
-            enforceBounds();
-            updateAngles();
-            invalidate();
+        public void updateAngles() {
+            reachedSweep = progress /mMax * 360f;
+            unReachedStart = 270f + progress /mMax * 360f;
+            unRreachedSweep = 360f - (progress /mMax * 360f);
         }
     }
 }

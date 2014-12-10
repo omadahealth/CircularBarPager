@@ -22,6 +22,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        circularBarPager.animateProgress(0, 75, this);
+        circularBarPager.animateProgress(0, 75, 1000);
     }
 }

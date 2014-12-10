@@ -7,9 +7,10 @@
     android:orientation="vertical">
     <daniel.olivier.stoyan.library.CircularBarPager
         android:id="@+id/circularBar1"
-        android:layout_height="400dp"
-        android:layout_width="400dp"
+        android:layout_height="300dp"
+        android:layout_width="300dp"
+        android:layout_centerInParent="true"
         app:progress="20"
-        app:progress_reached_arc_width="10dp"
-        app:progress_unreached_arc_width="0.75dp"/>
+        app:progress_reached_arc_width="8dp"
+        app:progress_unreached_arc_width="1dp"/>
 </RelativeLayout>

@@ -91,7 +91,9 @@ public class CircularBarPager extends View {
     /**
      * reached bar area rect.
      */
-    private RectF mArcRectF = new RectF(0,0,0,0);
+    private RectF mReachedArcRectF = new RectF(0,0,0,0);
+
+    private RectF mUnReachedArcRectF = new RectF(0,0,0,0);
 
     /**
      * determine if need to draw unreached area
@@ -138,16 +140,6 @@ public class CircularBarPager extends View {
 
     }
 
-//    @Override
-//    protected int getSuggestedMinimumWidth() {
-//        return Math.max((int) mReachedArcWidth,(int) mUnreachedArcWidth);
-//    }
-//
-//    @Override
-//    protected int getSuggestedMinimumHeight() {
-//        return Math.max((int) mReachedArcWidth,(int) mUnreachedArcWidth);
-//    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(measure(widthMeasureSpec,true), measure(heightMeasureSpec,false));
@@ -180,42 +172,44 @@ public class CircularBarPager extends View {
         calculateDrawRectF();
 
         if(mDrawReachedBar){
-            canvas.drawArc(mArcRectF, 0f, 360f, false, mReachedBarPaint);
+            canvas.drawArc(mReachedArcRectF, 270f, 270f, false, mReachedBarPaint);
+            canvas.drawArc(mUnReachedArcRectF, 180f, 90f, false, mUnreachedBarPaint);
+//            canvas.drawLine(mReachedArcRectF.centerX(), mReachedArcRectF.top - mReachedArcWidth, mReachedArcRectF.centerX() + 1, mReachedArcRectF.top, mReachedBarPaint);
         }
-
-//        if(mDrawUnreachedBar) {
-//            canvas.drawArc(mArcRectF, 180f, 360f, false, mUnreachedBarPaint);
-//        }
-
     }
 
+    /**
+     * Calculates the coordinates of {@link #mUnReachedArcRectF} and
+     * {@link #mReachedArcRectF}
+     */
     private void calculateDrawRectF(){
-        RectF workingSurface = new RectF();
-        workingSurface.left = getPaddingLeft() + getMaxArcOffset();
-        workingSurface.top = getPaddingTop() + getMaxArcOffset();
-        workingSurface.right = getWidth() - getPaddingRight() - getMaxArcOffset();
-        workingSurface.bottom = getHeight() - getPaddingBottom() - getMaxArcOffset();
-
-        mArcRectF = getArcRect(workingSurface);
+        mReachedArcRectF = getArcRect(mReachedArcWidth/2);
+        mUnReachedArcRectF = getArcRect(mUnreachedArcWidth/2);
     }
 
-    private RectF getArcRect(RectF rect){
-        if(rect == null){
-            return new RectF(0,0,0,0);
-        }
-        float width = rect.right - rect.left;
-        float height = rect.bottom - rect.top;
+    /**
+     * Calculates the coordinates of {@link android.graphics.RectF} that
+     * are perfectly within the available window
+     * @param offset Half the width of the pain stroke
+     * @return The rectF
+     */
+    private RectF getArcRect(float offset){
+        RectF workingSurface = new RectF();
+        workingSurface.left = getPaddingLeft() + offset;
+        workingSurface.top = getPaddingTop() + offset;
+        workingSurface.right = getWidth() - getPaddingRight() - offset;
+        workingSurface.bottom = getHeight() - getPaddingBottom() - offset;
+
+        float width = workingSurface.right - workingSurface.left;
+        float height = workingSurface.bottom - workingSurface.top;
         float radius = Math.min(width, height)/2;
         float centerX = width/2;
         float centerY = height/2;
 
         //float left, float top, float right, float bottom
-        return new RectF(centerX - radius + getMaxArcOffset(), centerY - radius + getMaxArcOffset(), centerX + radius + getMaxArcOffset(), centerY + radius + getMaxArcOffset());
+        return new RectF(centerX - radius + offset, centerY - radius + offset, centerX + radius + offset, centerY + radius + offset);
     }
 
-    private float getMaxArcOffset(){
-        return Math.max(mReachedArcWidth, mUnreachedArcWidth)/2;
-    }
     private void initializePainters(){
         mReachedBarPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mReachedBarPaint.setColor(mReachedArcColor);
@@ -227,11 +221,9 @@ public class CircularBarPager extends View {
         mUnreachedBarPaint.setColor(mUnreachedArcColor);
         mUnreachedBarPaint.setAntiAlias(true);
         mUnreachedBarPaint.setStrokeWidth(mUnreachedArcWidth);
-        mReachedBarPaint.setStyle(Paint.Style.STROKE);
+        mUnreachedBarPaint.setStyle(Paint.Style.STROKE);
 
     }
-
-
 
 
     public int getUnreachedBarColor() {

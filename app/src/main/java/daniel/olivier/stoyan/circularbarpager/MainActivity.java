@@ -15,12 +15,13 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         circularBarPager = (CircularBarPager)findViewById(R.id.circularBar1);
+//        circularBarPager.setProgress(70);
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        circularBarPager.animateProgress(0, 15, this);
+        circularBarPager.animateProgress(0, 75, this);
     }
 }

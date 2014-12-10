@@ -32,7 +32,7 @@ public class CircularBarPager extends View {
     /**
      * current progress, can not exceed the max progress.
      */
-    private int mProgress = 0;
+    private float mProgress = 0;
 
     /**
      * the progress area bar color
@@ -206,7 +206,7 @@ public class CircularBarPager extends View {
                     @Override
                     public void run() {
                         mProgressSweep.increment(1);
-                        if (mProgress > end) {
+                        if (mProgress >= end) {
                             setProgress(end);
                             timer.cancel();
                             timer.purge();
@@ -214,7 +214,7 @@ public class CircularBarPager extends View {
                     }
                 });
             }
-        }, 333, 10);
+        }, 333, 25);
     }
 
     /**
@@ -273,7 +273,7 @@ public class CircularBarPager extends View {
         return mReachedArcColor;
     }
 
-    public int getProgress() {
+    public float getProgress() {
         return mProgress;
     }
 
@@ -341,10 +341,16 @@ public class CircularBarPager extends View {
     }
 
 
-    public void setProgress(int Progress) {
+    public void setProgress(float Progress) {
         if(Progress <= getMax()  && Progress >= 0){
             this.mProgress = Progress;
-            this.mProgressSweep = new ProgressSweep(mProgress);
+            if(mProgressSweep == null){
+                this.mProgressSweep = new ProgressSweep(mProgress);
+            }else{
+                mProgressSweep.enforceBounds();
+                mProgressSweep.updateAngles();
+            }
+
             invalidate();
         }
     }
@@ -358,7 +364,7 @@ public class CircularBarPager extends View {
         bundle.putInt(INSTANCE_REACHED_BAR_COLOR,getReachedBarColor());
         bundle.putInt(INSTANCE_UNREACHED_BAR_COLOR,getUnreachedBarColor());
         bundle.putInt(INSTANCE_MAX,getMax());
-        bundle.putInt(INSTANCE_PROGRESS, getProgress());
+        bundle.putFloat(INSTANCE_PROGRESS, getProgress());
         bundle.putString(INSTANCE_SUFFIX,getSuffix());
         bundle.putString(INSTANCE_PREFIX, getPrefix());
         return bundle;
@@ -374,7 +380,7 @@ public class CircularBarPager extends View {
             mUnreachedArcColor = bundle.getInt(INSTANCE_UNREACHED_BAR_COLOR);
             initializePainters();
             setMax(bundle.getInt(INSTANCE_MAX));
-            setProgress(bundle.getInt(INSTANCE_PROGRESS));
+            setProgress(bundle.getFloat(INSTANCE_PROGRESS));
             setPrefix(bundle.getString(INSTANCE_PREFIX));
             setSuffix(bundle.getString(INSTANCE_SUFFIX));
             super.onRestoreInstanceState(bundle.getParcelable(INSTANCE_STATE));
@@ -404,15 +410,14 @@ public class CircularBarPager extends View {
         public float unReachedStart = START_12;
         public float unRreachedSweep = 360f;
 
-        private float mProgress;
 
-        public ProgressSweep(int progress){
+        public ProgressSweep(float progress){
             mProgress = progress;
             enforceBounds();
             updateAngles();
         }
 
-        private void enforceBounds() {
+        public void enforceBounds() {
             if(mProgress < 0 ){
                 mProgress = 0;
             }
@@ -421,7 +426,7 @@ public class CircularBarPager extends View {
             }
         }
 
-        private void updateAngles() {
+        public void updateAngles() { //<<<< fix this
             reachedSweep = mProgress/mMax * 360f;
             unReachedStart = 270f + mProgress/mMax * 360f;
             unRreachedSweep = 360f - (mProgress/mMax * 360f);

@@ -10,7 +10,7 @@
         android:layout_height="300dp"
         android:layout_width="300dp"
         android:layout_centerInParent="true"
-        app:progress="50"
+        app:progress="0"
         app:progress_reached_arc_width="8dp"
         app:progress_unreached_arc_width="1dp"/>
 </RelativeLayout>

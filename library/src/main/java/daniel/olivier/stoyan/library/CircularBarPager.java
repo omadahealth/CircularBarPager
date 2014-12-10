@@ -1,5 +1,6 @@
 package daniel.olivier.stoyan.library;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -10,6 +11,9 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import stoyan.olivier.library.R;
 
@@ -186,6 +190,34 @@ public class CircularBarPager extends View {
     }
 
     /**
+     * Animate the change in progress of this view
+     *
+     * @param start    The value to start from, between 0-100
+     * @param end      The value to set it to, between 0-100
+     * @param activity The activity to use for the animation
+     */
+    public void animateProgress(final int start, final int end, final Activity activity) {
+        setProgress(start);
+        final Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProgressSweep.increment(1);
+                        if (mProgress > end) {
+                            setProgress(end);
+                            timer.cancel();
+                            timer.purge();
+                        }
+                    }
+                });
+            }
+        }, 333, 10);
+    }
+
+    /**
      * Calculates the coordinates of {@link #mUnReachedArcRectF} and
      * {@link #mReachedArcRectF}
      */
@@ -308,11 +340,6 @@ public class CircularBarPager extends View {
         return mPrefix;
     }
 
-    public void incrementProgressBy(int by){
-        if(by > 0){
-            setProgress(getProgress() + by);
-        }
-    }
 
     public void setProgress(int Progress) {
         if(Progress <= getMax()  && Progress >= 0){
@@ -404,6 +431,7 @@ public class CircularBarPager extends View {
             mProgress += val;
             enforceBounds();
             updateAngles();
+            invalidate();
         }
     }
 }

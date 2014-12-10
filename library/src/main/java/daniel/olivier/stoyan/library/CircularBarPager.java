@@ -51,6 +51,12 @@ public class CircularBarPager extends View {
     private float mUnreachedArcWidth;
 
     /**
+     * the progress angles of the {@link #mUnReachedArcRectF} and
+     * {@link #mReachedArcRectF}
+     */
+    private ProgressSweep mProgressSweep;
+
+    /**
      * the suffix of the number.
      */
     private String mSuffix = "%";
@@ -62,7 +68,7 @@ public class CircularBarPager extends View {
 
 
     private final int default_reached_color = Color.parseColor("#aed036");
-    private final int default_unreached_color = Color.parseColor("#636f3c");
+    private final int default_unreached_color = Color.parseColor("#aed036");
     private final float default_reached_arc_width;
     private final float default_unreached_arc_width;
 
@@ -131,8 +137,9 @@ public class CircularBarPager extends View {
         mReachedArcWidth = attributes.getDimension(R.styleable.CircularBarPager_progress_reached_arc_width, default_reached_arc_width);
         mUnreachedArcWidth = attributes.getDimension(R.styleable.CircularBarPager_progress_unreached_arc_width, default_unreached_arc_width);
 
-        setProgress(attributes.getInt(R.styleable.CircularBarPager_progress,0));
+
         setMax(attributes.getInt(R.styleable.CircularBarPager_max, 100));
+        setProgress(attributes.getInt(R.styleable.CircularBarPager_progress,0));
         //
         attributes.recycle();
 
@@ -172,8 +179,8 @@ public class CircularBarPager extends View {
         calculateDrawRectF();
 
         if(mDrawReachedBar){
-            canvas.drawArc(mReachedArcRectF, 270f, 270f, false, mReachedBarPaint);
-            canvas.drawArc(mUnReachedArcRectF, 180f, 90f, false, mUnreachedBarPaint);
+            canvas.drawArc(mReachedArcRectF, mProgressSweep.reachedStart, mProgressSweep.reachedSweep, false, mReachedBarPaint);
+            canvas.drawArc(mUnReachedArcRectF, mProgressSweep.unReachedStart, mProgressSweep.unRreachedSweep, false, mUnreachedBarPaint);
 //            canvas.drawLine(mReachedArcRectF.centerX(), mReachedArcRectF.top - mReachedArcWidth, mReachedArcRectF.centerX() + 1, mReachedArcRectF.top, mReachedBarPaint);
         }
     }
@@ -310,6 +317,7 @@ public class CircularBarPager extends View {
     public void setProgress(int Progress) {
         if(Progress <= getMax()  && Progress >= 0){
             this.mProgress = Progress;
+            this.mProgressSweep = new ProgressSweep(mProgress);
             invalidate();
         }
     }
@@ -356,6 +364,47 @@ public class CircularBarPager extends View {
     public float sp2px(float sp){
         final float scale = getResources().getDisplayMetrics().scaledDensity;
         return sp * scale;
+    }
+
+    private class ProgressSweep {
+        private static final float START_12 = 270f;
+        private static final float START_3 = 0f;
+        private static final float START_6 = 90f;
+        private static final float START_9 = 180f;
+
+        public float reachedStart = START_12;
+        public float reachedSweep = 0f;
+        public float unReachedStart = START_12;
+        public float unRreachedSweep = 360f;
+
+        private float mProgress;
+
+        public ProgressSweep(int progress){
+            mProgress = progress;
+            enforceBounds();
+            updateAngles();
+        }
+
+        private void enforceBounds() {
+            if(mProgress < 0 ){
+                mProgress = 0;
+            }
+            if(mProgress > mMax){
+                mProgress = mMax;
+            }
+        }
+
+        private void updateAngles() {
+            reachedSweep = mProgress/mMax * 360f;
+            unReachedStart = 270f + mProgress/mMax * 360f;
+            unRreachedSweep = 360f - (mProgress/mMax * 360f);
+        }
+
+        public void increment(int val){
+            mProgress += val;
+            enforceBounds();
+            updateAngles();
+        }
     }
 }
 

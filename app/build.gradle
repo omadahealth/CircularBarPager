@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1"
 
     defaultConfig {
-        applicationId "stoyan.olivier.circularbarpager"
+        applicationId "daniel.olivier.stoyan.circularbarpager"
         minSdkVersion 10
         targetSdkVersion 21
         versionCode 1

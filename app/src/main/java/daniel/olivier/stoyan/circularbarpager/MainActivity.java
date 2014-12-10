@@ -1,4 +1,4 @@
-package stoyan.olivier.circularbarpager;
+package daniel.olivier.stoyan.circularbarpager;
 
 import android.app.Activity;
 import android.os.Bundle;

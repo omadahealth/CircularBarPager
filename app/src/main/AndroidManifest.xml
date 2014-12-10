@@ -1,10 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="stoyan.olivier.circularbarpager">
+    package="daniel.olivier.stoyan.circularbarpager">
 
     <application android:allowBackup="true" android:label="@string/app_name"
         android:icon="@drawable/ic_launcher" android:theme="@style/AppTheme">
         <activity
-            android:name="stoyan.olivier.circularbarpager.MainActivity"
+            android:name="daniel.olivier.stoyan.circularbarpager.MainActivity"
             android:label="CircularBarPager" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -13,5 +13,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

@@ -125,7 +125,7 @@ public class CircularBarPager extends RelativeLayout {
 
     /**
      * Set the padding ratio between the size of this view and the padding that should have {@link android.support.v4.view.ViewPager}
-     * inside of it. Set to 10 by default. If you want to disable, set it to 0.
+     * inside of it. Set to 12 by default. If you want to disable, set it to 0.
      *
      * @param paddingRatio the ratio
      */

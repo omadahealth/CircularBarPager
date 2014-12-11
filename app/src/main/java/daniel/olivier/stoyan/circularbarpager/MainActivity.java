@@ -35,6 +35,9 @@ public class MainActivity extends Activity {
 
         CirclePageIndicator circlePageIndicator = mCircularBarPager.getCirclePageIndicator();
         circlePageIndicator.setSnap(true);
+        circlePageIndicator.setFillColor(getResources().getColor(R.color.light_grey));
+        circlePageIndicator.setPageColor(getResources().getColor(R.color.very_light_grey));
+        circlePageIndicator.setStrokeColor(getResources().getColor(R.color.transparent));
     }
 
     @Override

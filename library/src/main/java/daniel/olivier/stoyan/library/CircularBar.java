@@ -73,8 +73,8 @@ public class CircularBar extends View {
     private String mPrefix = "";
 
 
-    private final int default_reached_color = Color.parseColor("#aed036");
-    private final int default_unreached_color = Color.parseColor("#aed036");
+    private final int default_reached_color = Color.parseColor("#00c853");
+    private final int default_unreached_color = Color.parseColor("#00c853");
     private final float default_reached_arc_width;
     private final float default_unreached_arc_width;
 
@@ -189,7 +189,7 @@ public class CircularBar extends View {
         if(mDrawReachedBar){
             canvas.drawArc(mReachedArcRectF, mProgressSweep.reachedStart, mProgressSweep.reachedSweep, false, mReachedBarPaint);
             canvas.drawArc(mUnReachedArcRectF, mProgressSweep.unReachedStart, mProgressSweep.unRreachedSweep, false, mUnreachedBarPaint);
-            canvas.drawLine(mReachedArcRectF.centerX(), mReachedArcRectF.top - mReachedArcWidth, mReachedArcRectF.centerX() + 1, mReachedArcRectF.top + mReachedArcWidth*1.5f, mUnreachedBarPaint);
+            canvas.drawLine(mReachedArcRectF.centerX(), mReachedArcRectF.top - mReachedArcWidth/2, mReachedArcRectF.centerX() + 1, mReachedArcRectF.top + mReachedArcWidth*1.5f, mUnreachedBarPaint);
         }
     }
 

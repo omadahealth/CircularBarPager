@@ -42,7 +42,7 @@ public class CircularBarPager extends RelativeLayout {
      * The ratio used to set the padding to the {@link android.support.v4.view.ViewPager}
      * relative to the size of this complete view.
      */
-    private int mPaddingRatio = 10;
+    private int mPaddingRatio = 12;
 
     /**
      * Used for getting the info that the padding has already been set in {@link #onMeasure(int, int)}.

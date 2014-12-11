@@ -18,20 +18,20 @@ public class FadeViewPagerTransformer implements ViewPager.PageTransformer {
     public void transformPage(View view, float position) {
         //Calculate real position (with padding)
         position -= (float) ((ViewPager) view.getParent()).getPaddingRight() / (float) view.getWidth();
-        if (position <= -1 || position >= 1) {
+        if (position <= -1.0f || position >= 1.0f) {
             view.setAlpha(0);
             view.setTranslationX(0);
-        } else if (position < 0.0001 && position > -0.0001) {
+        } else if (position < 0.0001f && position > -0.0001f) {
             view.setAlpha(1);
             view.setTranslationX(1);
-        } else if (position <= 0 || position <= 1) {
+        } else if (position <= 0.0f || position <= 1.0f) {
             //Get the page margin to calculate the alpha relatively to it
-            float pageMargin = - (float) ((ViewPager) view.getParent()).getPageMargin() / (float) view.getWidth();
+            float pageMargin = -(float) ((ViewPager) view.getParent()).getPageMargin() / (float) view.getWidth();
             float alpha = position / (1.0f - pageMargin);
             alpha = (alpha <= 0) ? alpha + 1 : 1 - alpha;
             view.setAlpha(alpha);
             //Reduce the translation by factor 2
-            view.setTranslationX(-position * ((float) view.getWidth() / 2.0f));
+            view.setTranslationX(-position * ((float) view.getWidth() / 1.5f));
         }
     }
 

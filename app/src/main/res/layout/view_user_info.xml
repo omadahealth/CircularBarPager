@@ -11,7 +11,7 @@
         android:id="@+id/user_top_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="30sp"
         android:textColor="@android:color/black"
         android:gravity="center"
         android:text="TEXT" />
@@ -23,16 +23,16 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:gravity="center"
-        android:textSize="40sp"
+        android:textSize="50sp"
         android:textColor="@android:color/black"
-        android:text="230" />
+        android:text="230.00" />
 
     <TextView
         android:id="@+id/user_bottom_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="20sp"
+        android:textSize="30sp"
         android:textColor="@android:color/black"
         android:text="TEXT" />
 

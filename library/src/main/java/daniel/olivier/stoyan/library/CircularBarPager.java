@@ -18,13 +18,37 @@ import stoyan.olivier.library.R;
  */
 public class CircularBarPager extends RelativeLayout {
 
+    /**
+     * The current {@link android.content.Context} of the app
+     */
     private Context mContext;
 
+    /**
+     * The inflated {@link daniel.olivier.stoyan.library.CircularBar}
+     */
     private CircularBar mCircularBar;
 
+    /**
+     * The inflated {@link android.support.v4.view.ViewPager}
+     */
     private ViewPager mViewPager;
 
+    /**
+     * The inflated {@link com.viewpagerindicator.CirclePageIndicator}
+     */
     private CirclePageIndicator mCirclePageIndicator;
+
+    /**
+     * The ratio used to set the padding to the {@link android.support.v4.view.ViewPager}
+     * relative to the size of this complete view.
+     */
+    private int mPaddingRatio = 10;
+
+    /**
+     * Used for getting the info that the padding has already been set in {@link #onMeasure(int, int)}.
+     * Improve performance.
+     */
+    private boolean isPaddingSet;
 
     public CircularBarPager(Context context) {
         this(context, null);
@@ -47,7 +71,9 @@ public class CircularBarPager extends RelativeLayout {
      * Init also some default values as PageTranformer etc...
      */
     private void initializeView(AttributeSet attrs, int defStyleAttr) {
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        isPaddingSet = false;
+
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.circularbar_view_pager, this);
 
         mCircularBar = (CircularBar) view.findViewById(R.id.circular_bar);
@@ -63,17 +89,20 @@ public class CircularBarPager extends RelativeLayout {
      * Apply a {@link android.support.v4.view.ViewPager#setPadding(int, int, int, int)} and
      * {@link android.support.v4.view.ViewPager#setPageMargin(int)} in order to get a nicer animation
      * on the {@link android.support.v4.view.ViewPager} inside the {@link daniel.olivier.stoyan.library.CircularBar}
-     * TODO disable through styleable?
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        int paddingForViewPager = this.getMeasuredWidth() / 6;
-        mViewPager.setPadding(paddingForViewPager, 0, paddingForViewPager, 0);
+        if (!isPaddingSet) {
+            int paddingForViewPager = this.getMeasuredWidth() / mPaddingRatio;
+            mViewPager.setPadding(paddingForViewPager, mViewPager.getPaddingTop(), paddingForViewPager, mViewPager.getPaddingBottom());
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            mViewPager.setPageMargin(-(mViewPager.getPaddingLeft() + mViewPager.getPaddingRight()));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                mViewPager.setPageMargin(-(int) (((float) mViewPager.getPaddingLeft() + (float) mViewPager.getPaddingRight()) * 2.0f));
+            }
+
+            isPaddingSet = true;
         }
     }
 
@@ -92,5 +121,16 @@ public class CircularBarPager extends RelativeLayout {
 
     public CirclePageIndicator getCirclePageIndicator() {
         return mCirclePageIndicator;
+    }
+
+    /**
+     * Set the padding ratio between the size of this view and the padding that should have {@link android.support.v4.view.ViewPager}
+     * inside of it. Set to 10 by default. If you want to disable, set it to 0.
+     *
+     * @param paddingRatio the ratio
+     */
+    public void setPaddingRatio(int paddingRatio) {
+        this.mPaddingRatio = paddingRatio;
+        isPaddingSet = false;
     }
 }

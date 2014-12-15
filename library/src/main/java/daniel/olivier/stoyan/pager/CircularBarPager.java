@@ -1,4 +1,27 @@
-package daniel.olivier.stoyan.library;
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Omada Health, Inc
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package daniel.olivier.stoyan.pager;
 
 import android.content.Context;
 import android.os.Build;
@@ -10,8 +33,7 @@ import android.widget.RelativeLayout;
 
 import com.viewpagerindicator.CirclePageIndicator;
 
-import daniel.olivier.stoyan.library.viewpager.FadeViewPagerTransformer;
-import stoyan.olivier.library.R;
+import daniel.olivier.stoyan.pager.viewpager.FadeViewPagerTransformer;
 
 /**
  * Created by oliviergoutay and stoyan on 12/10/14.
@@ -24,7 +46,7 @@ public class CircularBarPager extends RelativeLayout {
     private Context mContext;
 
     /**
-     * The inflated {@link daniel.olivier.stoyan.library.CircularBar}
+     * The inflated {@link daniel.olivier.stoyan.pager.CircularBar}
      */
     private CircularBar mCircularBar;
 
@@ -66,7 +88,7 @@ public class CircularBarPager extends RelativeLayout {
     }
 
     /**
-     * Init the view by getting the {@link daniel.olivier.stoyan.library.CircularBar},
+     * Init the view by getting the {@link daniel.olivier.stoyan.pager.CircularBar},
      * the {@link android.support.v4.view.ViewPager} and the {@link com.viewpagerindicator.CirclePageIndicator}.
      * Init also some default values as PageTranformer etc...
      */
@@ -88,7 +110,7 @@ public class CircularBarPager extends RelativeLayout {
     /**
      * Apply a {@link android.support.v4.view.ViewPager#setPadding(int, int, int, int)} and
      * {@link android.support.v4.view.ViewPager#setPageMargin(int)} in order to get a nicer animation
-     * on the {@link android.support.v4.view.ViewPager} inside the {@link daniel.olivier.stoyan.library.CircularBar}
+     * on the {@link android.support.v4.view.ViewPager} inside the {@link daniel.olivier.stoyan.pager.CircularBar}
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

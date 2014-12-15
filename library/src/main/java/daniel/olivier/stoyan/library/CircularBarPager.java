@@ -14,7 +14,7 @@ import daniel.olivier.stoyan.library.viewpager.FadeViewPagerTransformer;
 import stoyan.olivier.library.R;
 
 /**
- * Created by oliviergoutay on 12/10/14.
+ * Created by oliviergoutay and stoyan on 12/10/14.
  */
 public class CircularBarPager extends RelativeLayout {
 

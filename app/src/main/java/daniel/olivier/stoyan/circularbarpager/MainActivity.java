@@ -11,7 +11,7 @@ import daniel.olivier.stoyan.library.CircularBarPager;
 import daniel.olivier.stoyan.library.viewpager.HomeFragmentViewPagerAdapter;
 
 /**
- * Created by stoyan on 12/9/14.
+ * Created by stoyan and oliviergoutay on 12/9/14.
  */
 public class MainActivity extends Activity {
 
@@ -25,8 +25,8 @@ public class MainActivity extends Activity {
 //        mCircularBarPager.setProgress(70);
 
         View[] views = new View[2];
-        views[0] = new HomeUserView(this);
-        views[1] = new HomeUserView(this);
+        views[0] = new ExampleAdapterView(this);
+        views[1] = new ExampleAdapterView(this);
 
         mCircularBarPager.setViewPagerAdapter(new HomeFragmentViewPagerAdapter(this, views));
 

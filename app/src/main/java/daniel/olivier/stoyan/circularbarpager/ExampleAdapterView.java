@@ -7,13 +7,13 @@ import android.widget.LinearLayout;
 /**
  * Created by oliviergoutay on 12/8/14.
  */
-public class HomeUserView extends LinearLayout {
+public class ExampleAdapterView extends LinearLayout {
     /**
      * TAG for logging
      */
     private static final String TAG = "HomeUserView";
 
-    public HomeUserView(Context context) {
+    public ExampleAdapterView(Context context) {
         super(context);
 
         initView();

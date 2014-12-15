@@ -27,7 +27,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.Toast;
 
+import com.nineoldandroids.animation.Animator;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import daniel.olivier.stoyan.pager.CircularBarPager;
@@ -61,6 +63,28 @@ public class MainActivity extends Activity {
         circlePageIndicator.setFillColor(getResources().getColor(R.color.light_grey));
         circlePageIndicator.setPageColor(getResources().getColor(R.color.very_light_grey));
         circlePageIndicator.setStrokeColor(getResources().getColor(R.color.transparent));
+
+        mCircularBarPager.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                Toast.makeText(getApplicationContext(), "Finished!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
     }
 
     @Override

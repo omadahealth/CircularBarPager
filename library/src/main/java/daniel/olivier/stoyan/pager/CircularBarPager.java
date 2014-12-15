@@ -31,6 +31,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 
+import com.nineoldandroids.animation.Animator;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import daniel.olivier.stoyan.pager.viewpager.FadeViewPagerTransformer;
@@ -133,14 +134,48 @@ public class CircularBarPager extends RelativeLayout {
         mCirclePageIndicator.setViewPager(mViewPager);
     }
 
+
+    /**
+     * Method to add a listener to call on animations
+     * @param listener The listener to call
+     */
+    public void addListener(Animator.AnimatorListener listener){
+        mCircularBar.addListener(listener);
+    }
+
+    /**
+     * Removes the listener provided
+     * @param listener The listener to remove
+     * @return True if it was in the list and removed, false otherwise
+     */
+    public boolean removeListener(Animator.AnimatorListener listener){
+        return mCircularBar.removeListener(listener);
+    }
+
+    /**
+     * Removes all animation listeners
+     */
+    public void removeAllListeners(){
+        mCircularBar.removeAllListeners();
+    }
+
+    /**
+     * @return The circular bar of this view
+     */
     public CircularBar getCircularBar() {
         return mCircularBar;
     }
 
+    /**
+     * @return The view pager of this view
+     */
     public ViewPager getViewPager() {
         return mViewPager;
     }
 
+    /**
+     * @return The Page indicator of this view
+     */
     public CirclePageIndicator getCirclePageIndicator() {
         return mCirclePageIndicator;
     }

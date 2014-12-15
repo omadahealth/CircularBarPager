@@ -31,3 +31,26 @@ dependencies {
 }
 
 //apply from: './gradle-mvn-push.gradle'
+
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.sourceFiles
+}
+
+artifacts {
+    archives androidSourcesJar
+}
+
+apply plugin: 'maven'
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri("../../omada-nexus/release"))
+            snapshotRepository(url: uri("../../omada-nexus/release"))
+            //com.github.traex.rippleeffect:library:1.2.3
+            pom.groupId = 'daniel.olivier.stoyan.circularbarpager'
+            pom.artifactId = 'circularbarpager'
+            pom.version = '1.0.0'
+        }
+    }
+}

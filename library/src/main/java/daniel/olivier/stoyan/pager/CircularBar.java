@@ -37,8 +37,12 @@ import android.view.View;
 
 import com.daimajia.easing.Glider;
 import com.daimajia.easing.Skill;
+import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -101,6 +105,11 @@ public class CircularBar extends View {
      * The prefix.
      */
     private String mPrefix = "";
+
+    /**
+     * A list of listeners we call on animations
+     */
+    private List<Animator.AnimatorListener> mListeners;
 
     /**
      * The defaults for width and color of the reached and unreached arcs
@@ -169,6 +178,7 @@ public class CircularBar extends View {
         default_reached_arc_width = dp2px(5f);
         default_unreached_arc_width = dp2px(1.0f);
 
+        mListeners = new ArrayList<>();
         loadStyledAttributes(attrs, defStyleAttr);
     }
 
@@ -327,7 +337,6 @@ public class CircularBar extends View {
         mUnreachedBarPaint.setAntiAlias(true);
         mUnreachedBarPaint.setStrokeWidth(mUnreachedArcWidth);
         mUnreachedBarPaint.setStyle(Paint.Style.STROKE);
-
     }
 
     /**
@@ -340,9 +349,48 @@ public class CircularBar extends View {
     public void animateProgress(int start,int end, int duration) {
         AnimatorSet set = new AnimatorSet();
         set.playTogether(Glider.glide(Skill.QuadEaseInOut, duration, ObjectAnimator.ofFloat(this, "progress", start, end)));
-
         set.setDuration(duration);
+        set = addListenersToSet(set);
         set.start();
+    }
+
+    /**
+     * Adds the current listeners to the {@link com.nineoldandroids.animation.AnimatorSet}
+     * before animation starts
+     * @param set The set to add listeners to
+     * @return The set with listeners added
+     */
+    protected AnimatorSet addListenersToSet(AnimatorSet set){
+        if(mListeners != null && set != null){
+            for(Animator.AnimatorListener listener : mListeners){
+                set.addListener(listener);
+            }
+        }
+        return set;
+    }
+
+    /**
+     * Method to add a listener to call on animations
+     * @param listener The listener to call
+     */
+    public void addListener(Animator.AnimatorListener listener){
+        mListeners.add(listener);
+    }
+
+    /**
+     * Removes the listener provided
+     * @param listener The listener to remove
+     * @return True if it was in the list and removed, false otherwise
+     */
+    public boolean removeListener(Animator.AnimatorListener listener){
+        return mListeners.remove(listener);
+    }
+
+    /**
+     * Removes all animation listeners
+     */
+    public void removeAllListeners(){
+        mListeners = new ArrayList<>();
     }
 
     /**

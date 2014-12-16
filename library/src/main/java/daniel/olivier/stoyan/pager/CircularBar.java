@@ -247,15 +247,15 @@ public class CircularBar extends View {
         final TypedArray attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.CircularBar,
                 defStyleAttr, 0);
 
-        mReachedArcColor = attributes.getColor(R.styleable.CircularBar_progress_reached_color, default_reached_color);
-        mUnreachedArcColor = attributes.getColor(R.styleable.CircularBar_progress_unreached_color, default_unreached_color);
+        mReachedArcColor = attributes.getColor(R.styleable.CircularBar_progress_arc_reached_color, default_reached_color);
+        mUnreachedArcColor = attributes.getColor(R.styleable.CircularBar_progress_arc_unreached_color, default_unreached_color);
 
-        mReachedArcWidth = attributes.getDimension(R.styleable.CircularBar_progress_reached_arc_width, default_reached_arc_width);
-        mUnreachedArcWidth = attributes.getDimension(R.styleable.CircularBar_progress_unreached_arc_width, default_unreached_arc_width);
+        mReachedArcWidth = attributes.getDimension(R.styleable.CircularBar_progress_arc_reached_width, default_reached_arc_width);
+        mUnreachedArcWidth = attributes.getDimension(R.styleable.CircularBar_progress_arc_unreached_width, default_unreached_arc_width);
 
 
-        setMax(attributes.getInt(R.styleable.CircularBar_max, 100));
-        setProgress(attributes.getInt(R.styleable.CircularBar_progress,0));
+        setMax(attributes.getInt(R.styleable.CircularBar_progress_arc_max, 100));
+        setProgress(attributes.getInt(R.styleable.CircularBar_arc_progress,0));
 
         attributes.recycle();
 

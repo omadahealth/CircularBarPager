@@ -12,6 +12,9 @@
 
         <item name="progress_arc_reached_width">1.5dp</item>
         <item name="progress_arc_unreached_width">0.75dp</item>
+
+
+        <item name="progress_pager_on_click_enabled">false</item>
     </style>
 
 </resources>

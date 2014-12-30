@@ -24,11 +24,16 @@
 package daniel.olivier.stoyan.pager;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Build;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.nineoldandroids.animation.Animator;
@@ -94,6 +99,9 @@ public class CircularBarPager extends RelativeLayout {
      * Init also some default values as PageTranformer etc...
      */
     private void initializeView(AttributeSet attrs, int defStyleAttr) {
+        final TypedArray attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.CircularViewPager,
+                defStyleAttr, 0);
+        boolean enableOnClick = attributes.getBoolean(R.styleable.CircularViewPager_progress_pager_on_click_enabled, false);
         isPaddingSet = false;
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -106,6 +114,25 @@ public class CircularBarPager extends RelativeLayout {
         //Default init
         mCircularBar.loadStyledAttributes(attrs, defStyleAttr);
         mViewPager.setPageTransformer(false, new FadeViewPagerTransformer());
+
+        //If we enable onClick, ie. we can switch between pages with both a swipe and a touch
+        //Touch just goes to the next page % number of pages
+        if(enableOnClick){
+            final GestureDetectorCompat tapGestureDetector = new GestureDetectorCompat(getContext(), new GestureDetector.SimpleOnGestureListener(){
+
+                @Override
+                public boolean onSingleTapConfirmed(MotionEvent e) {
+                    mViewPager.setCurrentItem((mViewPager.getCurrentItem() + 1) % mViewPager.getAdapter().getCount());
+                    return super.onSingleTapConfirmed(e);
+                }
+            });
+            mViewPager.setOnTouchListener(new OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    tapGestureDetector.onTouchEvent(event);
+                    return false;
+                }
+            });
+        }
     }
 
     /**

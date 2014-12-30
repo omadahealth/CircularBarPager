@@ -90,6 +90,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        mCircularBarPager.getCircularBar().animateProgress(0, 75, 1000);
+        mCircularBarPager.getCircularBar().animateProgress(0, -75, 1000);
     }
 }

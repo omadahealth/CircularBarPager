@@ -12,6 +12,10 @@
 
     </declare-styleable>
 
+    <declare-styleable name="CircularViewPager">
+        <attr name="progress_pager_on_click_enabled" format="boolean"/>
+    </declare-styleable>
+
     <declare-styleable name="Themes">
         <attr name="CircularBarPagerStyle" format="reference"/>
     </declare-styleable>

@@ -76,9 +76,9 @@ public class CircularBar extends View {
     private int mReachedArcColor;
 
     /**
-     * The bar unreached area color.
+     * The bar outline area color.
      */
-    private int mUnreachedArcColor;
+    private int mOutlineArcColor;
 
     /**
      * The width of the reached area
@@ -86,12 +86,42 @@ public class CircularBar extends View {
     private float mReachedArcWidth;
 
     /**
-     * The width of the unreached area
+     * The width of the outline area
      */
-    private float mUnreachedArcWidth;
+    private float mOutlineArcWidth;
 
     /**
-     * The progress angles of the {@link #mUnReachedArcRectF} and
+     * The Paint of the reached area.
+     */
+    private Paint mReachedBarPaint;
+
+    /**
+     * The Painter of the outline area.
+     */
+    private Paint mOutlineBarPaint;
+
+    /**
+     * The reached bar area rect.
+     */
+    private RectF mReachedArcRectF = new RectF(0,0,0,0);
+
+    /**
+     * The outline bar area
+     */
+    private RectF mOutlineArcRectF = new RectF(0,0,0,0);
+
+    /**
+     * Determine if need to draw outline area
+     */
+    private boolean mDrawOutlineBar = true;
+
+    /**
+     * We should always draw reached area
+     */
+    private boolean mDrawReachedBar = true;
+
+    /**
+     * The progress angles of the {@link #mOutlineArcRectF} and
      * {@link #mReachedArcRectF}
      */
     private ProgressSweep mProgressSweep;
@@ -112,12 +142,12 @@ public class CircularBar extends View {
     private List<Animator.AnimatorListener> mListeners;
 
     /**
-     * The defaults for width and color of the reached and unreached arcs
+     * The defaults for width and color of the reached and outline arcs
      */
     private final int default_reached_color = Color.parseColor("#00c853");
-    private final int default_unreached_color = Color.parseColor("#00c853");
+    private final int default_outline_color = Color.parseColor("#00c853");
     private final float default_reached_arc_width;
-    private final float default_unreached_arc_width;
+    private final float default_outline_arc_width;
 
     /**
      * For save and restore instance of progressbar
@@ -125,42 +155,12 @@ public class CircularBar extends View {
     private static final String INSTANCE_STATE = "saved_instance";
     private static final String INSTANCE_REACHED_BAR_HEIGHT = "reached_bar_height";
     private static final String INSTANCE_REACHED_BAR_COLOR = "reached_bar_color";
-    private static final String INSTANCE_UNREACHED_BAR_HEIGHT = "unreached_bar_height";
-    private static final String INSTANCE_UNREACHED_BAR_COLOR = "unreached_bar_color";
+    private static final String INSTANCE_OUTLINE_BAR_HEIGHT = "outline_bar_height";
+    private static final String INSTANCE_OUTLINE_BAR_COLOR = "outline_bar_color";
     private static final String INSTANCE_MAX = "max";
     private static final String INSTANCE_PROGRESS = "progress";
     private static final String INSTANCE_SUFFIX = "suffix";
     private static final String INSTANCE_PREFIX = "prefix";
-
-    /**
-     * The Paint of the reached area.
-     */
-    private Paint mReachedBarPaint;
-
-    /**
-     * The Painter of the unreached area.
-     */
-    private Paint mUnreachedBarPaint;
-
-    /**
-     * The reached bar area rect.
-     */
-    private RectF mReachedArcRectF = new RectF(0,0,0,0);
-
-    /**
-     * The unreached bar area
-     */
-    private RectF mUnReachedArcRectF = new RectF(0,0,0,0);
-
-    /**
-     * Determine if need to draw unreached area
-     */
-    private boolean mDrawUnreachedBar = true;
-
-    /**
-     * We should always draw reached area
-     */
-    private boolean mDrawReachedBar = true;
 
     public CircularBar(Context context) {
         this(context, null);
@@ -176,7 +176,7 @@ public class CircularBar extends View {
         mContext = context;
 
         default_reached_arc_width = dp2px(5f);
-        default_unreached_arc_width = dp2px(1.0f);
+        default_outline_arc_width = dp2px(1.0f);
 
         mListeners = new ArrayList<>();
         loadStyledAttributes(attrs, defStyleAttr);
@@ -195,12 +195,12 @@ public class CircularBar extends View {
             //Draw the bar
             canvas.drawArc(mReachedArcRectF, mProgressSweep.reachedStart, mProgressSweep.reachedSweep, false, mReachedBarPaint);
             //Draw the bar start line
-            canvas.drawLine(mReachedArcRectF.centerX(), mReachedArcRectF.top - mReachedArcWidth/2, mReachedArcRectF.centerX() + 1, mReachedArcRectF.top + mReachedArcWidth*1.5f, mUnreachedBarPaint);
+            canvas.drawLine(mReachedArcRectF.centerX(), mReachedArcRectF.top - mReachedArcWidth/2, mReachedArcRectF.centerX() + 1, mReachedArcRectF.top + mReachedArcWidth*1.5f, mOutlineBarPaint);
         }
 
-        if(mDrawUnreachedBar){
-            //Draw the unreached bar
-            canvas.drawArc(mUnReachedArcRectF, mProgressSweep.unReachedStart, mProgressSweep.unRreachedSweep, false, mUnreachedBarPaint);
+        if(mDrawOutlineBar){
+            //Draw the outline bar
+            canvas.drawArc(mOutlineArcRectF, mProgressSweep.outlineStart, mProgressSweep.outlineSweep, false, mOutlineBarPaint);
         }
     }
 
@@ -209,9 +209,9 @@ public class CircularBar extends View {
         final Bundle bundle = new Bundle();
         bundle.putParcelable(INSTANCE_STATE, super.onSaveInstanceState());
         bundle.putFloat(INSTANCE_REACHED_BAR_HEIGHT,getReachedBarHeight());
-        bundle.putFloat(INSTANCE_UNREACHED_BAR_HEIGHT, getUnreachedBarHeight());
+        bundle.putFloat(INSTANCE_OUTLINE_BAR_HEIGHT, getOutlineBarHeight());
         bundle.putInt(INSTANCE_REACHED_BAR_COLOR,getReachedBarColor());
-        bundle.putInt(INSTANCE_UNREACHED_BAR_COLOR,getUnreachedBarColor());
+        bundle.putInt(INSTANCE_OUTLINE_BAR_COLOR, getOutlineBarColor());
         bundle.putInt(INSTANCE_MAX,getMax());
         bundle.putFloat(INSTANCE_PROGRESS, getProgress());
         bundle.putString(INSTANCE_SUFFIX,getSuffix());
@@ -224,9 +224,9 @@ public class CircularBar extends View {
         if(state instanceof Bundle){
             final Bundle bundle = (Bundle)state;
             mReachedArcWidth = bundle.getFloat(INSTANCE_REACHED_BAR_HEIGHT);
-            mUnreachedArcWidth = bundle.getFloat(INSTANCE_UNREACHED_BAR_HEIGHT);
+            mOutlineArcWidth = bundle.getFloat(INSTANCE_OUTLINE_BAR_HEIGHT);
             mReachedArcColor = bundle.getInt(INSTANCE_REACHED_BAR_COLOR);
-            mUnreachedArcColor = bundle.getInt(INSTANCE_UNREACHED_BAR_COLOR);
+            mOutlineArcColor = bundle.getInt(INSTANCE_OUTLINE_BAR_COLOR);
             initializePainters();
             setMax(bundle.getInt(INSTANCE_MAX));
             setProgress(bundle.getFloat(INSTANCE_PROGRESS));
@@ -248,10 +248,10 @@ public class CircularBar extends View {
                 defStyleAttr, 0);
 
         mReachedArcColor = attributes.getColor(R.styleable.CircularBar_progress_arc_reached_color, default_reached_color);
-        mUnreachedArcColor = attributes.getColor(R.styleable.CircularBar_progress_arc_unreached_color, default_unreached_color);
+        mOutlineArcColor = attributes.getColor(R.styleable.CircularBar_progress_arc_outline_color, default_outline_color);
 
         mReachedArcWidth = attributes.getDimension(R.styleable.CircularBar_progress_arc_reached_width, default_reached_arc_width);
-        mUnreachedArcWidth = attributes.getDimension(R.styleable.CircularBar_progress_arc_unreached_width, default_unreached_arc_width);
+        mOutlineArcWidth = attributes.getDimension(R.styleable.CircularBar_progress_arc_outline_width, default_outline_arc_width);
 
 
         setMax(attributes.getInt(R.styleable.CircularBar_progress_arc_max, 100));
@@ -291,12 +291,12 @@ public class CircularBar extends View {
     }
 
     /**
-     * Calculates the coordinates of {@link #mUnReachedArcRectF} and
+     * Calculates the coordinates of {@link #mOutlineArcRectF} and
      * {@link #mReachedArcRectF}
      */
     private void calculateDrawRectF(){
         mReachedArcRectF = getArcRect(mReachedArcWidth/2);
-        mUnReachedArcRectF = getArcRect(mUnreachedArcWidth/2);
+        mOutlineArcRectF = getArcRect(mOutlineArcWidth /2);
     }
 
     /**
@@ -332,11 +332,11 @@ public class CircularBar extends View {
         mReachedBarPaint.setStrokeWidth(mReachedArcWidth);
         mReachedBarPaint.setStyle(Paint.Style.STROKE);
 
-        mUnreachedBarPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mUnreachedBarPaint.setColor(mUnreachedArcColor);
-        mUnreachedBarPaint.setAntiAlias(true);
-        mUnreachedBarPaint.setStrokeWidth(mUnreachedArcWidth);
-        mUnreachedBarPaint.setStyle(Paint.Style.STROKE);
+        mOutlineBarPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mOutlineBarPaint.setColor(mOutlineArcColor);
+        mOutlineBarPaint.setAntiAlias(true);
+        mOutlineBarPaint.setStrokeWidth(mOutlineArcWidth);
+        mOutlineBarPaint.setStyle(Paint.Style.STROKE);
     }
 
     /**
@@ -410,11 +410,11 @@ public class CircularBar extends View {
     }
 
     /**
-     * The unreached arc color
+     * The outline arc color
      * @return
      */
-    public int getUnreachedBarColor() {
-        return mUnreachedArcColor;
+    public int getOutlineBarColor() {
+        return mOutlineArcColor;
     }
 
     /**
@@ -450,11 +450,11 @@ public class CircularBar extends View {
     }
 
     /**
-     * Get the height of the {@link #mUnreachedArcWidth}
+     * Get the height of the {@link #mOutlineArcWidth}
      * @return
      */
-    public float getUnreachedBarHeight(){
-        return mUnreachedArcWidth;
+    public float getOutlineBarHeight(){
+        return mOutlineArcWidth;
     }
 
     /**
@@ -468,11 +468,11 @@ public class CircularBar extends View {
     }
 
     /**
-     * Sets the {@link #mUnreachedBarPaint} and invalidates the view
+     * Sets the {@link #mOutlineBarPaint} and invalidates the view
      * @param color The hex color to set
      */
-    public void setUnreachedBarColor(int color) {
-        this.mUnreachedArcColor = color;
+    public void setOutlineBarColor(int color) {
+        this.mOutlineArcColor = color;
         initializePainters();
         invalidate();
     }
@@ -487,11 +487,11 @@ public class CircularBar extends View {
     }
 
     /**
-     * Sets the {@link #mUnreachedArcWidth} and invalidates the view
+     * Sets the {@link #mOutlineArcWidth} and invalidates the view
      * @param height The height in dp to set
      */
-    public void setUnreachedBarHeight(float height){
-        mUnreachedArcWidth = height;
+    public void setOutlineBarHeight(float height){
+        mOutlineArcWidth = height;
         invalidate();
     }
 
@@ -607,14 +607,14 @@ public class CircularBar extends View {
         public float reachedSweep = 0f;
 
         /**
-         * Starting angle position of the unreached arc
+         * Starting angle position of the outline arc
          */
-        public float unReachedStart = reachedStart;
+        public float outlineStart = reachedStart;
 
         /**
-         * The sweep angle of the unreached arc
+         * The sweep angle of the outline arc
          */
-        public float unRreachedSweep = 360f;
+        public float outlineSweep = 360f;
 
         public ProgressSweep(float progress){
             CircularBar.this.progress = progress;
@@ -639,8 +639,8 @@ public class CircularBar extends View {
          */
         public void updateAngles() {
             reachedSweep = progress /mMax * 360f;
-            unReachedStart = 270f + progress /mMax * 360f;
-            unRreachedSweep = 360f - (progress /mMax * 360f);
+            outlineStart = 270f + progress /mMax * 360f;
+            outlineSweep = 360f - (progress /mMax * 360f);
         }
 
     }

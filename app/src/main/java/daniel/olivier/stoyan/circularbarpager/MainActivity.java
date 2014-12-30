@@ -47,7 +47,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mCircularBarPager = (CircularBarPager) findViewById(R.id.circularBarPager);
-//        mCircularBarPager.setProgress(70);
 
         View[] views = new View[2];
         views[0] = new ExampleAdapterView(this);
@@ -90,6 +89,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        mCircularBarPager.getCircularBar().animateProgress(0, -75, 1000);
+        mCircularBarPager.getCircularBar().animateProgress(0, 75, 1000);
     }
 }

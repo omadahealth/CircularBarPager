@@ -45,13 +45,23 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initViews();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mCircularBarPager.getCircularBar().animateProgress(0, 75, 1000);
+    }
+
+    private void initViews(){
         mCircularBarPager = (CircularBarPager) findViewById(R.id.circularBarPager);
 
         View[] views = new View[2];
-        views[0] = new ExampleAdapterView(this);
-        views[1] = new ExampleAdapterView(this);
+        views[0] = new DemoAdapterView(this);
+        views[1] = new DemoAdapterView(this);
 
-        mCircularBarPager.setViewPagerAdapter(new HomeFragmentViewPagerAdapter(this, views));
+        mCircularBarPager.setViewPagerAdapter(new DemoViewPagerAdapter(this, views));
 
         ViewPager viewPager = mCircularBarPager.getViewPager();
         viewPager.setClipToPadding(true);
@@ -82,11 +92,5 @@ public class MainActivity extends Activity {
 
             }
         });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mCircularBarPager.getCircularBar().animateProgress(0, 75, 1000);
     }
 }

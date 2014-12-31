@@ -247,10 +247,10 @@ public class CircularBar extends View {
         final TypedArray attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.CircularBar,
                 defStyleAttr, 0);
 
-        mReachedArcColor = attributes.getColor(R.styleable.CircularBar_progress_arc_reached_color, default_reached_color);
+        mReachedArcColor = attributes.getColor(R.styleable.CircularBar_progress_arc_clockwise_color, default_reached_color);
         mOutlineArcColor = attributes.getColor(R.styleable.CircularBar_progress_arc_outline_color, default_outline_color);
 
-        mReachedArcWidth = attributes.getDimension(R.styleable.CircularBar_progress_arc_reached_width, default_reached_arc_width);
+        mReachedArcWidth = attributes.getDimension(R.styleable.CircularBar_progress_arc_clockwise_width, default_reached_arc_width);
         mOutlineArcWidth = attributes.getDimension(R.styleable.CircularBar_progress_arc_outline_width, default_outline_arc_width);
 
 

@@ -27,7 +27,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.Toast;
 
 import com.nineoldandroids.animation.Animator;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -40,6 +39,11 @@ import daniel.olivier.stoyan.pager.CircularBarPager;
 public class MainActivity extends Activity {
 
     private CircularBarPager mCircularBarPager;
+
+    /**
+     * The animation time in milliseconds that we take to display the steps taken
+     */
+    private static final int BAR_ANIMATION_TIME = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +62,10 @@ public class MainActivity extends Activity {
         mCircularBarPager = (CircularBarPager) findViewById(R.id.circularBarPager);
 
         View[] views = new View[2];
-        views[0] = new DemoAdapterView(this);
-        views[1] = new DemoAdapterView(this);
+        views[0] = new DemoView(this);
+        views[1] = new DemoView(this);
 
-        mCircularBarPager.setViewPagerAdapter(new DemoViewPagerAdapter(this, views));
+        mCircularBarPager.setViewPagerAdapter(new DemoPagerAdapter(this, views));
 
         ViewPager viewPager = mCircularBarPager.getViewPager();
         viewPager.setClipToPadding(true);
@@ -71,6 +75,7 @@ public class MainActivity extends Activity {
         circlePageIndicator.setPageColor(getResources().getColor(R.color.very_light_grey));
         circlePageIndicator.setStrokeColor(getResources().getColor(R.color.transparent));
 
+        //Do stuff based on animation
         mCircularBarPager.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -79,7 +84,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                Toast.makeText(getApplicationContext(), "Finished!", Toast.LENGTH_SHORT).show();
+                //TODO do stuff
             }
 
             @Override
@@ -90,6 +95,26 @@ public class MainActivity extends Activity {
             @Override
             public void onAnimationRepeat(Animator animation) {
 
+            }
+        });
+
+        //Do stuff based on when pages change
+        circlePageIndicator.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+            @Override
+            public void onPageSelected(int position) {
+                if(mCircularBarPager!= null && mCircularBarPager.getCircularBar() != null){
+                    switch (position){
+                        case 0:
+                            mCircularBarPager.getCircularBar().animateProgress(0, 75, BAR_ANIMATION_TIME);
+                            break;
+                        case 1:
+                            mCircularBarPager.getCircularBar().animateProgress(75, -25, BAR_ANIMATION_TIME);
+                            break;
+                        default:
+                            mCircularBarPager.getCircularBar().animateProgress(0, 75, BAR_ANIMATION_TIME);
+                            break;
+                    }
+                }
             }
         });
     }

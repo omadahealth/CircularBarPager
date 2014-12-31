@@ -13,8 +13,6 @@
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
         android:layout_centerInParent="true"
-        app:arc_progress="0"
-        app:progress_arc_reached_width="8dp"
-        app:progress_arc_outline_width="1dp"/>
+        style="@style/CircularBarPagerStyle"/>
 
 </RelativeLayout>

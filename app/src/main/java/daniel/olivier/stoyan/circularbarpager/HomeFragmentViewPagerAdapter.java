@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package daniel.olivier.stoyan.pager.viewpager;
+package daniel.olivier.stoyan.circularbarpager;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;

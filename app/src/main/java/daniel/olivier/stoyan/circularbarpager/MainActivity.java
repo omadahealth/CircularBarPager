@@ -33,7 +33,6 @@ import com.nineoldandroids.animation.Animator;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import daniel.olivier.stoyan.pager.CircularBarPager;
-import daniel.olivier.stoyan.pager.viewpager.HomeFragmentViewPagerAdapter;
 
 /**
  * Created by stoyan and oliviergoutay on 12/9/14.
@@ -58,7 +57,6 @@ public class MainActivity extends Activity {
         viewPager.setClipToPadding(true);
 
         CirclePageIndicator circlePageIndicator = mCircularBarPager.getCirclePageIndicator();
-        circlePageIndicator.setSnap(true);
         circlePageIndicator.setFillColor(getResources().getColor(R.color.light_grey));
         circlePageIndicator.setPageColor(getResources().getColor(R.color.very_light_grey));
         circlePageIndicator.setStrokeColor(getResources().getColor(R.color.transparent));

@@ -71,54 +71,95 @@ public class CircularBar extends View {
     private float progress = 0;
 
     /**
-     * The progress area bar color
+     * The clockwise progress area bar color
      */
-    private int mReachedArcColor;
+    private int mClockwiseArcColor;
 
     /**
-     * The bar outline area color.
+     * The counter clockwise progress area bar color
      */
-    private int mOutlineArcColor;
+    private int mCounterClockwiseArcColor;
 
     /**
-     * The width of the reached area
+     * The clockwise bar outline area color.
      */
-    private float mReachedArcWidth;
+    private int mClockwiseOutlineArcColor;
 
     /**
-     * The width of the outline area
+     * The counter clockwise bar outline area color.
      */
-    private float mOutlineArcWidth;
+    private int mCounterClockwiseOutlineArcColor;
+
+    /**
+     * The clockwise width of the reached area
+     */
+    private float mClockwiseReachedArcWidth;
+
+    /**
+     * The counter clockwise width of the reached area
+     */
+    private float mCounterClockwiseReachedArcWidth;
+
+    /**
+     * The clockwise width of the outline area
+     */
+    private float mClockwiseOutlineArcWidth;
+
+    /**
+     * The counter clockwise width of the outline area
+     */
+    private float mCounterClockwiseOutlineArcWidth;
 
     /**
      * The Paint of the reached area.
      */
-    private Paint mReachedBarPaint;
+    private Paint mReachedArcPaint;
+
+    /**
+     * The Paint of the clockwise reached area.
+     */
+    private Paint mClockwiseReachedArcPaint;
+
+    /**
+     * The Paint of the counter clockwise reached area.
+     */
+    private Paint mCounterClockwiseReachedArcPaint;
 
     /**
      * The Painter of the outline area.
      */
-    private Paint mOutlineBarPaint;
+    private Paint mOutlineArcPaint;
+
+    /**
+     * The Painter of the clockwise outline area.
+     */
+    private Paint mClockwiseOutlineArcPaint;
+
+    /**
+     * The Painter of the counter clockwise outline area.
+     */
+    private Paint mCounterClockwiseOutlineArcPaint;
+
 
     /**
      * The reached bar area rect.
      */
-    private RectF mReachedArcRectF = new RectF(0,0,0,0);
+    private RectF mReachedArcRectF = new RectF(0, 0, 0, 0);
 
     /**
      * The outline bar area
      */
-    private RectF mOutlineArcRectF = new RectF(0,0,0,0);
+    private RectF mOutlineArcRectF = new RectF(0, 0, 0, 0);
 
     /**
      * Determine if need to draw outline area
      */
-    private boolean mDrawOutlineBar = true;
+    private boolean mDrawOutlineArc = true;
 
     /**
      * We should always draw reached area
      */
-    private boolean mDrawReachedBar = true;
+    private boolean mDrawReachedArc = true;
 
     /**
      * The progress angles of the {@link #mOutlineArcRectF} and
@@ -144,8 +185,10 @@ public class CircularBar extends View {
     /**
      * The defaults for width and color of the reached and outline arcs
      */
-    private final int default_reached_color = Color.parseColor("#00c853");
-    private final int default_outline_color = Color.parseColor("#00c853");
+    private final int default_clockwise_reached_color = Color.parseColor("#00c853");
+    private final int default_clockwise_outline_color = Color.parseColor("#00c853");
+    private final int default_counter_clockwise_reached_color = Color.parseColor("#ffffff");
+    private final int default_counter_clockwise_outline_color = Color.parseColor("#ffffff");
     private final float default_reached_arc_width;
     private final float default_outline_arc_width;
 
@@ -153,10 +196,14 @@ public class CircularBar extends View {
      * For save and restore instance of progressbar
      */
     private static final String INSTANCE_STATE = "saved_instance";
-    private static final String INSTANCE_REACHED_BAR_HEIGHT = "reached_bar_height";
-    private static final String INSTANCE_REACHED_BAR_COLOR = "reached_bar_color";
-    private static final String INSTANCE_OUTLINE_BAR_HEIGHT = "outline_bar_height";
-    private static final String INSTANCE_OUTLINE_BAR_COLOR = "outline_bar_color";
+    private static final String INSTANCE_CLOCKWISE_REACHED_BAR_HEIGHT = "clockwise_reached_bar_height";
+    private static final String INSTANCE_CLOCKWISE_REACHED_BAR_COLOR = "clockwise_reached_bar_color";
+    private static final String INSTANCE_CLOCKWISE_OUTLINE_BAR_HEIGHT = "clockwise_outline_bar_height";
+    private static final String INSTANCE_CLOCKWISE_OUTLINE_BAR_COLOR = "clockwise_outline_bar_color";
+    private static final String INSTANCE_COUNTER_CLOCKWISE_REACHED_BAR_HEIGHT = "counter_clockwise_reached_bar_height";
+    private static final String INSTANCE_COUNTER_CLOCKWISE_REACHED_BAR_COLOR = "counter_clockwise_reached_bar_color";
+    private static final String INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_HEIGHT = "counter_clockwise_outline_bar_height";
+    private static final String INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_COLOR = "counter_clockwise_outline_bar_color";
     private static final String INSTANCE_MAX = "max";
     private static final String INSTANCE_PROGRESS = "progress";
     private static final String INSTANCE_SUFFIX = "suffix";
@@ -191,16 +238,16 @@ public class CircularBar extends View {
     protected void onDraw(Canvas canvas) {
         calculateDrawRectF();
 
-        if(mDrawReachedBar){
+        if (mDrawReachedArc) {
             //Draw the bar
-            canvas.drawArc(mReachedArcRectF, mProgressSweep.reachedStart, mProgressSweep.reachedSweep, false, mReachedBarPaint);
+            canvas.drawArc(mReachedArcRectF, mProgressSweep.reachedStart, mProgressSweep.reachedSweep, false, mReachedArcPaint);
             //Draw the bar start line
-            canvas.drawLine(mReachedArcRectF.centerX(), mReachedArcRectF.top - mReachedArcWidth/2, mReachedArcRectF.centerX() + 1, mReachedArcRectF.top + mReachedArcWidth*1.5f, mOutlineBarPaint);
+            canvas.drawLine(mReachedArcRectF.centerX(), mReachedArcRectF.top - mClockwiseReachedArcWidth / 2, mReachedArcRectF.centerX() + 1, mReachedArcRectF.top + mClockwiseReachedArcWidth * 1.5f, mOutlineArcPaint);
         }
 
-        if(mDrawOutlineBar){
+        if (mDrawOutlineArc) {
             //Draw the outline bar
-            canvas.drawArc(mOutlineArcRectF, mProgressSweep.outlineStart, mProgressSweep.outlineSweep, false, mOutlineBarPaint);
+            canvas.drawArc(mOutlineArcRectF, mProgressSweep.outlineStart, mProgressSweep.outlineSweep, false, mOutlineArcPaint);
         }
     }
 
@@ -208,25 +255,33 @@ public class CircularBar extends View {
     protected Parcelable onSaveInstanceState() {
         final Bundle bundle = new Bundle();
         bundle.putParcelable(INSTANCE_STATE, super.onSaveInstanceState());
-        bundle.putFloat(INSTANCE_REACHED_BAR_HEIGHT,getReachedBarHeight());
-        bundle.putFloat(INSTANCE_OUTLINE_BAR_HEIGHT, getOutlineBarHeight());
-        bundle.putInt(INSTANCE_REACHED_BAR_COLOR,getReachedBarColor());
-        bundle.putInt(INSTANCE_OUTLINE_BAR_COLOR, getOutlineBarColor());
-        bundle.putInt(INSTANCE_MAX,getMax());
+        bundle.putFloat(INSTANCE_CLOCKWISE_REACHED_BAR_HEIGHT, getClockwiseReachedArcWidth());
+        bundle.putFloat(INSTANCE_CLOCKWISE_OUTLINE_BAR_HEIGHT, getClockwiseOutlineArcWidth());
+        bundle.putInt(INSTANCE_CLOCKWISE_REACHED_BAR_COLOR, getClockwiseReachedArcColor());
+        bundle.putInt(INSTANCE_CLOCKWISE_OUTLINE_BAR_COLOR, getClockwiseOutlineArcColor());
+        bundle.putFloat(INSTANCE_COUNTER_CLOCKWISE_REACHED_BAR_HEIGHT, getCounterClockwiseReachedArcWidth());
+        bundle.putFloat(INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_HEIGHT, getCounterClockwiseOutlineArcWidth());
+        bundle.putInt(INSTANCE_COUNTER_CLOCKWISE_REACHED_BAR_COLOR, getCounterClockwiseReachedArcColor());
+        bundle.putInt(INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_COLOR, getCounterClockwiseOutlineArcColor());
+        bundle.putInt(INSTANCE_MAX, getMax());
         bundle.putFloat(INSTANCE_PROGRESS, getProgress());
-        bundle.putString(INSTANCE_SUFFIX,getSuffix());
+        bundle.putString(INSTANCE_SUFFIX, getSuffix());
         bundle.putString(INSTANCE_PREFIX, getPrefix());
         return bundle;
     }
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        if(state instanceof Bundle){
-            final Bundle bundle = (Bundle)state;
-            mReachedArcWidth = bundle.getFloat(INSTANCE_REACHED_BAR_HEIGHT);
-            mOutlineArcWidth = bundle.getFloat(INSTANCE_OUTLINE_BAR_HEIGHT);
-            mReachedArcColor = bundle.getInt(INSTANCE_REACHED_BAR_COLOR);
-            mOutlineArcColor = bundle.getInt(INSTANCE_OUTLINE_BAR_COLOR);
+        if (state instanceof Bundle) {
+            final Bundle bundle = (Bundle) state;
+            mClockwiseReachedArcWidth = bundle.getFloat(INSTANCE_CLOCKWISE_REACHED_BAR_HEIGHT);
+            mClockwiseOutlineArcWidth = bundle.getFloat(INSTANCE_CLOCKWISE_OUTLINE_BAR_HEIGHT);
+            mClockwiseArcColor = bundle.getInt(INSTANCE_CLOCKWISE_REACHED_BAR_COLOR);
+            mClockwiseOutlineArcColor = bundle.getInt(INSTANCE_CLOCKWISE_OUTLINE_BAR_COLOR);
+            mCounterClockwiseReachedArcWidth = bundle.getFloat(INSTANCE_COUNTER_CLOCKWISE_REACHED_BAR_HEIGHT);
+            mCounterClockwiseOutlineArcWidth = bundle.getFloat(INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_HEIGHT);
+            mCounterClockwiseArcColor = bundle.getInt(INSTANCE_COUNTER_CLOCKWISE_REACHED_BAR_COLOR);
+            mCounterClockwiseOutlineArcColor = bundle.getInt(INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_COLOR);
             initializePainters();
             setMax(bundle.getInt(INSTANCE_MAX));
             setProgress(bundle.getFloat(INSTANCE_PROGRESS));
@@ -240,22 +295,27 @@ public class CircularBar extends View {
 
     /**
      * Loads the styles and attributes defined in the xml tag of this class
-     * @param attrs The attributes to read from
+     *
+     * @param attrs        The attributes to read from
      * @param defStyleAttr The styles to read from
      */
     public void loadStyledAttributes(AttributeSet attrs, int defStyleAttr) {
-        final TypedArray attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.CircularBar,
+        final TypedArray attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.CircularViewPager,
                 defStyleAttr, 0);
 
-        mReachedArcColor = attributes.getColor(R.styleable.CircularBar_progress_arc_clockwise_color, default_reached_color);
-        mOutlineArcColor = attributes.getColor(R.styleable.CircularBar_progress_arc_outline_color, default_outline_color);
+        mClockwiseArcColor = attributes.getColor(R.styleable.CircularViewPager_progress_arc_clockwise_color, default_clockwise_reached_color);
+        mCounterClockwiseArcColor = attributes.getColor(R.styleable.CircularViewPager_progress_arc_counter_clockwise_color, default_counter_clockwise_reached_color);
+        mClockwiseOutlineArcColor = attributes.getColor(R.styleable.CircularViewPager_progress_arc_clockwise_outline_color, default_clockwise_outline_color);
+        mCounterClockwiseOutlineArcColor = attributes.getColor(R.styleable.CircularViewPager_progress_arc_counter_clockwise_outline_color, default_counter_clockwise_outline_color);
 
-        mReachedArcWidth = attributes.getDimension(R.styleable.CircularBar_progress_arc_clockwise_width, default_reached_arc_width);
-        mOutlineArcWidth = attributes.getDimension(R.styleable.CircularBar_progress_arc_outline_width, default_outline_arc_width);
+        mClockwiseReachedArcWidth = attributes.getDimension(R.styleable.CircularViewPager_progress_arc_clockwise_width, default_reached_arc_width);
+        mCounterClockwiseReachedArcWidth = attributes.getDimension(R.styleable.CircularViewPager_progress_arc_counter_clockwise_width, default_reached_arc_width);
+        mClockwiseOutlineArcWidth = attributes.getDimension(R.styleable.CircularViewPager_progress_arc_clockwise_outline_width, default_outline_arc_width);
+        mCounterClockwiseOutlineArcWidth = attributes.getDimension(R.styleable.CircularViewPager_progress_arc_counter_clockwise_outline_width, default_outline_arc_width);
 
 
-        setMax(attributes.getInt(R.styleable.CircularBar_progress_arc_max, 100));
-        setProgress(attributes.getInt(R.styleable.CircularBar_arc_progress,0));
+        setMax(attributes.getInt(R.styleable.CircularViewPager_progress_arc_max, 100));
+        setProgress(attributes.getInt(R.styleable.CircularViewPager_arc_progress, 0));
 
         attributes.recycle();
 
@@ -264,25 +324,25 @@ public class CircularBar extends View {
 
     /**
      * Measures the space available for our view in {@link #onMeasure(int, int)}
+     *
      * @param measureSpec The width or height of the view
-     * @param isWidth True if the measureSpec param is the width, false otherwise
+     * @param isWidth     True if the measureSpec param is the width, false otherwise
      * @return The usable dimension of the spec
      */
-    private int measure(int measureSpec, boolean isWidth){
+    private int measure(int measureSpec, boolean isWidth) {
         int result;
         int mode = MeasureSpec.getMode(measureSpec);
         int size = MeasureSpec.getSize(measureSpec);
-        int padding = isWidth?getPaddingLeft()+getPaddingRight():getPaddingTop()+getPaddingBottom();
-        if(mode == MeasureSpec.EXACTLY){
+        int padding = isWidth ? getPaddingLeft() + getPaddingRight() : getPaddingTop() + getPaddingBottom();
+        if (mode == MeasureSpec.EXACTLY) {
             result = size;
-        }else{
+        } else {
             result = isWidth ? getSuggestedMinimumWidth() : getSuggestedMinimumHeight();
             result += padding;
-            if(mode == MeasureSpec.AT_MOST){
-                if(isWidth) {
+            if (mode == MeasureSpec.AT_MOST) {
+                if (isWidth) {
                     result = Math.max(result, size);
-                }
-                else{
+                } else {
                     result = Math.min(result, size);
                 }
             }
@@ -294,18 +354,19 @@ public class CircularBar extends View {
      * Calculates the coordinates of {@link #mOutlineArcRectF} and
      * {@link #mReachedArcRectF}
      */
-    private void calculateDrawRectF(){
-        mReachedArcRectF = getArcRect(mReachedArcWidth/2);
-        mOutlineArcRectF = getArcRect(mOutlineArcWidth /2);
+    private void calculateDrawRectF() {
+        mReachedArcRectF = getArcRect(mClockwiseReachedArcWidth / 2);
+        mOutlineArcRectF = getArcRect(mClockwiseOutlineArcWidth / 2);
     }
 
     /**
      * Calculates the coordinates of {@link android.graphics.RectF} that
      * are perfectly within the available window
+     *
      * @param offset Half the width of the pain stroke
      * @return The rectF
      */
-    private RectF getArcRect(float offset){
+    private RectF getArcRect(float offset) {
         RectF workingSurface = new RectF();
         workingSurface.left = getPaddingLeft() + offset;
         workingSurface.top = getPaddingTop() + offset;
@@ -314,9 +375,9 @@ public class CircularBar extends View {
 
         float width = workingSurface.right - workingSurface.left;
         float height = workingSurface.bottom - workingSurface.top;
-        float radius = Math.min(width, height)/2;
-        float centerX = width/2;
-        float centerY = height/2;
+        float radius = Math.min(width, height) / 2;
+        float centerX = width / 2;
+        float centerY = height / 2;
 
         //float left, float top, float right, float bottom
         return new RectF(centerX - radius + offset, centerY - radius + offset, centerX + radius + offset, centerY + radius + offset);
@@ -325,18 +386,34 @@ public class CircularBar extends View {
     /**
      * Initializes the paints used for the bars
      */
-    private void initializePainters(){
-        mReachedBarPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mReachedBarPaint.setColor(mReachedArcColor);
-        mReachedBarPaint.setAntiAlias(true);
-        mReachedBarPaint.setStrokeWidth(mReachedArcWidth);
-        mReachedBarPaint.setStyle(Paint.Style.STROKE);
+    private void initializePainters() {
+        mClockwiseReachedArcPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mClockwiseReachedArcPaint.setColor(mClockwiseArcColor);
+        mClockwiseReachedArcPaint.setAntiAlias(true);
+        mClockwiseReachedArcPaint.setStrokeWidth(mClockwiseReachedArcWidth);
+        mClockwiseReachedArcPaint.setStyle(Paint.Style.STROKE);
 
-        mOutlineBarPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mOutlineBarPaint.setColor(mOutlineArcColor);
-        mOutlineBarPaint.setAntiAlias(true);
-        mOutlineBarPaint.setStrokeWidth(mOutlineArcWidth);
-        mOutlineBarPaint.setStyle(Paint.Style.STROKE);
+        mCounterClockwiseReachedArcPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mCounterClockwiseReachedArcPaint.setColor(mCounterClockwiseArcColor);
+        mCounterClockwiseReachedArcPaint.setAntiAlias(true);
+        mCounterClockwiseReachedArcPaint.setStrokeWidth(mCounterClockwiseReachedArcWidth);
+        mCounterClockwiseReachedArcPaint.setStyle(Paint.Style.STROKE);
+
+        mClockwiseOutlineArcPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mClockwiseOutlineArcPaint.setColor(mClockwiseOutlineArcColor);
+        mClockwiseOutlineArcPaint.setAntiAlias(true);
+        mClockwiseOutlineArcPaint.setStrokeWidth(mClockwiseOutlineArcWidth);
+        mClockwiseOutlineArcPaint.setStyle(Paint.Style.STROKE);
+
+        mCounterClockwiseOutlineArcPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mCounterClockwiseOutlineArcPaint.setColor(mCounterClockwiseOutlineArcColor);
+        mCounterClockwiseOutlineArcPaint.setAntiAlias(true);
+        mCounterClockwiseOutlineArcPaint.setStrokeWidth(mCounterClockwiseOutlineArcWidth);
+        mCounterClockwiseOutlineArcPaint.setStyle(Paint.Style.STROKE);
+
+        //Defaults
+        mReachedArcPaint = mClockwiseReachedArcPaint;
+        mOutlineArcPaint = mClockwiseOutlineArcPaint;
     }
 
     /**
@@ -346,7 +423,7 @@ public class CircularBar extends View {
      * @param end      The value to set it to, between 0-100
      * @param duration The the time to run the animation over
      */
-    public void animateProgress(int start,int end, int duration) {
+    public void animateProgress(int start, int end, int duration) {
         AnimatorSet set = new AnimatorSet();
         set.playTogether(Glider.glide(Skill.QuadEaseInOut, duration, ObjectAnimator.ofFloat(this, "progress", start, end)));
         set.setDuration(duration);
@@ -357,12 +434,13 @@ public class CircularBar extends View {
     /**
      * Adds the current listeners to the {@link com.nineoldandroids.animation.AnimatorSet}
      * before animation starts
+     *
      * @param set The set to add listeners to
      * @return The set with listeners added
      */
-    protected AnimatorSet addListenersToSet(AnimatorSet set){
-        if(mListeners != null && set != null){
-            for(Animator.AnimatorListener listener : mListeners){
+    protected AnimatorSet addListenersToSet(AnimatorSet set) {
+        if (mListeners != null && set != null) {
+            for (Animator.AnimatorListener listener : mListeners) {
                 set.addListener(listener);
             }
         }
@@ -371,62 +449,69 @@ public class CircularBar extends View {
 
     /**
      * Method to add a listener to call on animations
+     *
      * @param listener The listener to call
      */
-    public void addListener(Animator.AnimatorListener listener){
+    public void addListener(Animator.AnimatorListener listener) {
         mListeners.add(listener);
     }
 
     /**
      * Removes the listener provided
+     *
      * @param listener The listener to remove
      * @return True if it was in the list and removed, false otherwise
      */
-    public boolean removeListener(Animator.AnimatorListener listener){
+    public boolean removeListener(Animator.AnimatorListener listener) {
         return mListeners.remove(listener);
     }
 
     /**
      * Removes all animation listeners
      */
-    public void removeAllListeners(){
+    public void removeAllListeners() {
         mListeners = new ArrayList<>();
     }
 
     /**
      * Get the suffix
+     *
      * @return
      */
-    public String getSuffix(){
+    public String getSuffix() {
         return mSuffix;
     }
 
     /**
      * Get the prefix
+     *
      * @return
      */
-    public String getPrefix(){
+    public String getPrefix() {
         return mPrefix;
     }
 
     /**
-     * The outline arc color
+     * The clockwise outline arc color
+     *
      * @return
      */
-    public int getOutlineBarColor() {
-        return mOutlineArcColor;
+    public int getClockwiseOutlineArcColor() {
+        return mClockwiseOutlineArcColor;
     }
 
     /**
-     * The reached arc color
+     * The clockwise reached arc color
+     *
      * @return
      */
-    public int getReachedBarColor() {
-        return mReachedArcColor;
+    public int getClockwiseReachedArcColor() {
+        return mClockwiseArcColor;
     }
 
     /**
      * The current progress
+     *
      * @return
      */
     public float getProgress() {
@@ -435,6 +520,7 @@ public class CircularBar extends View {
 
     /**
      * Get the max of the reached arc, defaults to 100
+     *
      * @return
      */
     public int getMax() {
@@ -442,65 +528,150 @@ public class CircularBar extends View {
     }
 
     /**
-     * Get the height of the {@link #mReachedArcWidth}
+     * Get the height of the {@link #mClockwiseReachedArcWidth}
+     *
      * @return
      */
-    public float getReachedBarHeight(){
-        return mReachedArcWidth;
+    public float getClockwiseReachedArcWidth() {
+        return mClockwiseReachedArcWidth;
     }
 
     /**
-     * Get the height of the {@link #mOutlineArcWidth}
+     * Get the height of the {@link #mClockwiseOutlineArcWidth}
+     *
      * @return
      */
-    public float getOutlineBarHeight(){
-        return mOutlineArcWidth;
+    public float getClockwiseOutlineArcWidth() {
+        return mClockwiseOutlineArcWidth;
     }
 
     /**
-     * Sets the {@link #mReachedArcColor} and invalidates the view
+     * The counter clockwise outline arc color
+     *
+     * @return
+     */
+    public int getCounterClockwiseReachedArcColor() {
+        return mCounterClockwiseArcColor;
+    }
+
+    /**
+     * The counter clockwise outline arc color
+     *
+     * @return
+     */
+    public int getCounterClockwiseOutlineArcColor() {
+        return mCounterClockwiseOutlineArcColor;
+    }
+
+    /**
+     * Get the height of the {@link #mCounterClockwiseReachedArcWidth}
+     *
+     * @return
+     */
+    public float getCounterClockwiseReachedArcWidth() {
+        return mCounterClockwiseReachedArcWidth;
+    }
+
+    /**
+     * Get the height of the {@link #mCounterClockwiseOutlineArcWidth}
+     *
+     * @return
+     */
+    public float getCounterClockwiseOutlineArcWidth() {
+        return mCounterClockwiseOutlineArcWidth;
+    }
+
+    /**
+     * Sets the {@link #mCounterClockwiseOutlineArcWidth} and invalidates the view
+     *
+     * @param width The height in dp to set
+     */
+    public void setCounterClockwiseOutlineArcWidth(float width) {
+        this.mCounterClockwiseOutlineArcWidth = width;
+        invalidate();
+    }
+
+    /**
+     * Sets the {@link #mCounterClockwiseReachedArcWidth} and invalidates the view
+     *
+     * @param width The height in dp to set
+     */
+    public void setCounterClockwiseReachedArcWidth(float width) {
+        this.mCounterClockwiseReachedArcWidth = width;
+        invalidate();
+    }
+
+    /**
+     * Sets the {@link #mCounterClockwiseOutlineArcColor} and invalidates the view
+     *
      * @param color The hex color to set
      */
-    public void setReachedBarColor(int color) {
-        this.mReachedArcColor = color;
+    public void setCounterClockwiseOutlineArcColor(int color) {
+        this.mCounterClockwiseOutlineArcColor = color;
         initializePainters();
         invalidate();
     }
 
     /**
-     * Sets the {@link #mOutlineBarPaint} and invalidates the view
+     * Sets the {@link #mCounterClockwiseArcColor} and invalidates the view
+     *
      * @param color The hex color to set
      */
-    public void setOutlineBarColor(int color) {
-        this.mOutlineArcColor = color;
+    public void setCounterClockwiseArcColor(int color) {
+        this.mCounterClockwiseArcColor = color;
         initializePainters();
         invalidate();
     }
 
     /**
-     * Sets the {@link #mReachedArcWidth} and invalidates the view
-     * @param height The height in dp to set
+     * Sets the {@link #mClockwiseArcColor} and invalidates the view
+     *
+     * @param color The hex color to set
      */
-    public void setReachedBarHeight(float height){
-        mReachedArcWidth = height;
+    public void setClockwiseReachedArcColor(int color) {
+        this.mClockwiseArcColor = color;
+        initializePainters();
         invalidate();
     }
 
     /**
-     * Sets the {@link #mOutlineArcWidth} and invalidates the view
-     * @param height The height in dp to set
+     * Sets the {@link #mClockwiseOutlineArcColor} and invalidates the view
+     *
+     * @param color The hex color to set
      */
-    public void setOutlineBarHeight(float height){
-        mOutlineArcWidth = height;
+    public void setClockwiseOutlineArcColor(int color) {
+        this.mClockwiseOutlineArcColor = color;
+        initializePainters();
+        invalidate();
+    }
+
+    /**
+     * Sets the {@link #mClockwiseReachedArcWidth} and invalidates the view
+     *
+     * @param width The height in dp to set
+     */
+    public void setClockwiseReachedArcWidth(float width) {
+        mClockwiseReachedArcWidth = width;
+        invalidate();
+    }
+
+    /**
+     * Sets the {@link #mClockwiseOutlineArcWidth} and invalidates the view
+     *
+     * @param width The height in dp to set
+     */
+    public void setClockwiseOutlineArcWidth(float width) {
+        mClockwiseOutlineArcWidth = width;
         invalidate();
     }
 
     /**
      * Sets the {@link #mMax} and invalidates the view
+     *
      * @param max The height in dp to set
      */
     public void setMax(int max) {
-        if(max > 0){
+        if (max > 0) {
             this.mMax = max;
             invalidate();
         }
@@ -508,62 +679,63 @@ public class CircularBar extends View {
 
     /**
      * Sets the {@link #mSuffix}
+     *
      * @param suffix The suffix
      */
-    public void setSuffix(String suffix){
-        if(suffix == null){
+    public void setSuffix(String suffix) {
+        if (suffix == null) {
             mSuffix = "";
-        }else{
+        } else {
             mSuffix = suffix;
         }
     }
 
     /**
      * Sets the {@link #mPrefix}
+     *
      * @param prefix The prefix
      */
-    public void setPrefix(String prefix){
-        if(prefix == null)
+    public void setPrefix(String prefix) {
+        if (prefix == null)
             mPrefix = "";
-        else{
+        else {
             mPrefix = prefix;
         }
     }
 
     /**
-     *
      * @param Progress
      */
     public void setProgress(float Progress) {
-        if(Progress <= getMax()  && Progress >= 0){
-            this.progress = Progress;
-            if(mProgressSweep == null){
-                this.mProgressSweep = new ProgressSweep(progress);
-            }else{
-                mProgressSweep.enforceBounds();
-                mProgressSweep.updateAngles();
-            }
-
-            invalidate();
+        this.progress = Progress % getMax();
+        if (mProgressSweep == null) {
+            this.mProgressSweep = new ProgressSweep(progress);
+        } else {
+            mProgressSweep.enforceBounds();
+            mProgressSweep.updateAngles();
         }
+
+        invalidate();
     }
 
     /**
      * Convert from dp to pixels according to device density
+     *
      * @param dp The length in dip to convert
      * @return The pixel equivalent for this device
      */
     public float dp2px(float dp) {
         final float scale = getResources().getDisplayMetrics().density;
-        return  dp * scale + 0.5f;
+        return dp * scale + 0.5f;
     }
 
     /**
      * Convert from text sp to dp according to device density
+     *
      * @param sp The length in sp to convert
      * @return The pixel equivalent for this device
      */
-    public float sp2px(float sp){
+    public float sp2px(float sp) {
         final float scale = getResources().getDisplayMetrics().scaledDensity;
         return sp * scale;
     }
@@ -616,7 +788,7 @@ public class CircularBar extends View {
          */
         public float outlineSweep = 360f;
 
-        public ProgressSweep(float progress){
+        public ProgressSweep(float progress) {
             CircularBar.this.progress = progress;
             enforceBounds();
             updateAngles();
@@ -626,23 +798,34 @@ public class CircularBar extends View {
          * Enforce the progress boundary at the max value allowed
          */
         public void enforceBounds() {
-            if(progress < 0 ){
-                progress = 0;
-            }
-            if(progress > mMax){
-                progress = mMax;
-            }
+            progress %= mMax;
         }
 
         /**
          * Update the angles of the arcs
          */
         public void updateAngles() {
-            reachedSweep = progress /mMax * 360f;
-            outlineStart = 270f + progress /mMax * 360f;
-            outlineSweep = 360f - (progress /mMax * 360f);
-        }
+            if (progress >= 0) {
+                reachedStart = START_12;
+                reachedSweep = progress / mMax * 360f;
+                outlineStart = (START_12 + reachedSweep) % 360f;
+                outlineSweep = 360f - reachedSweep;
 
+                //paints
+                mReachedArcPaint = mClockwiseReachedArcPaint;
+                mOutlineArcPaint = mClockwiseOutlineArcPaint;
+            } else {
+                reachedSweep = Math.abs(progress / mMax * 360f);
+                reachedStart = START_12 - reachedSweep;
+                outlineStart = START_12;
+                outlineSweep = 360f - reachedSweep;
+
+                //paints
+                mReachedArcPaint = mCounterClockwiseReachedArcPaint;
+                mOutlineArcPaint = mCounterClockwiseOutlineArcPaint;
+
+            }
+        }
     }
 }
 

@@ -7,11 +7,13 @@
         <item name="progress_arc_max">100</item>
         <item name="arc_progress">20</item>
 
-        <item name="progress_arc_outline_color">#00C853</item>
+        <item name="progress_arc_clockwise_outline_color">#00C853</item>
         <item name="progress_arc_clockwise_color">#00C853</item>
+        <item name="progress_arc_counter_clockwise_outline_color">#FFFFFF</item>
         <item name="progress_arc_counter_clockwise_color">#FFFFFF</item>
 
-        <item name="progress_arc_outline_width">0.75dp</item>
+        <item name="progress_arc_clockwise_outline_width">0.75dp</item>
+        <item name="progress_arc_counter_clockwise_outline_width">0.75dp</item>
         <item name="progress_arc_clockwise_width">8dp</item>
         <item name="progress_arc_counter_clockwise_width">8dp</item>
 

@@ -105,7 +105,7 @@ public class MainActivity extends Activity {
                 if(mCircularBarPager!= null && mCircularBarPager.getCircularBar() != null){
                     switch (position){
                         case 0:
-                            mCircularBarPager.getCircularBar().animateProgress(0, 75, BAR_ANIMATION_TIME);
+                            mCircularBarPager.getCircularBar().animateProgress(-25, 75, BAR_ANIMATION_TIME);
                             break;
                         case 1:
                             mCircularBarPager.getCircularBar().animateProgress(75, -25, BAR_ANIMATION_TIME);

@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="CircularBar">
+    <declare-styleable name="CircularViewPager">
         <attr name="arc_progress" format="integer"/>
         <attr name="progress_arc_max" format="integer"/>
 
-        <attr name="progress_arc_outline_color" format="color"/>
+        <attr name="progress_arc_clockwise_outline_color" format="color"/>
+        <attr name="progress_arc_counter_clockwise_outline_color" format="color"/>
         <attr name="progress_arc_clockwise_color" format="color"/>
         <attr name="progress_arc_counter_clockwise_color" format="color"/>
 
 
-        <attr name="progress_arc_outline_width" format="dimension"/>
+        <attr name="progress_arc_clockwise_outline_width" format="dimension"/>
+        <attr name="progress_arc_counter_clockwise_outline_width" format="dimension"/>
         <attr name="progress_arc_clockwise_width" format="dimension"/>
         <attr name="progress_arc_counter_clockwise_width" format="dimension"/>
 
+        <attr name="progress_pager_on_click_enabled" format="boolean"/>
+
     </declare-styleable>
 
-    <declare-styleable name="CircularViewPager">
-        <attr name="progress_pager_on_click_enabled" format="boolean"/>
-    </declare-styleable>
+    <!--<declare-styleable name="CircularViewPager" >-->
+        <!--<attr name="progress_pager_on_click_enabled" format="boolean"/>-->
+    <!--</declare-styleable>-->
 
     <declare-styleable name="Themes">
         <attr name="CircularBarPagerStyle" format="reference"/>

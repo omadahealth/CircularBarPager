@@ -33,6 +33,7 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.daimajia.easing.Glider;
@@ -49,6 +50,11 @@ import java.util.List;
  * Created by stoyan and olivier on 12/9/14.
  */
 public class CircularBar extends View {
+    /**
+     * TAG for logging
+     */
+    private static final String TAG = "CircularBar";
+
     /**
      * The context of this view
      */
@@ -214,7 +220,7 @@ public class CircularBar extends View {
     }
 
     public CircularBar(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.CircularBarPagerStyle);
+        this(context, attrs, 0);
     }
 
     public CircularBar(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -300,26 +306,28 @@ public class CircularBar extends View {
      * @param defStyleAttr The styles to read from
      */
     public void loadStyledAttributes(AttributeSet attrs, int defStyleAttr) {
-        final TypedArray attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.CircularViewPager,
-                defStyleAttr, 0);
+        if (attrs != null) {
+            final TypedArray attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.CircularViewPager,
+                    defStyleAttr, 0);
 
-        mClockwiseArcColor = attributes.getColor(R.styleable.CircularViewPager_progress_arc_clockwise_color, default_clockwise_reached_color);
-        mCounterClockwiseArcColor = attributes.getColor(R.styleable.CircularViewPager_progress_arc_counter_clockwise_color, default_counter_clockwise_reached_color);
-        mClockwiseOutlineArcColor = attributes.getColor(R.styleable.CircularViewPager_progress_arc_clockwise_outline_color, default_clockwise_outline_color);
-        mCounterClockwiseOutlineArcColor = attributes.getColor(R.styleable.CircularViewPager_progress_arc_counter_clockwise_outline_color, default_counter_clockwise_outline_color);
+            mClockwiseArcColor = attributes.getColor(R.styleable.CircularViewPager_progress_arc_clockwise_color, default_clockwise_reached_color);
+            mCounterClockwiseArcColor = attributes.getColor(R.styleable.CircularViewPager_progress_arc_counter_clockwise_color, default_counter_clockwise_reached_color);
+            mClockwiseOutlineArcColor = attributes.getColor(R.styleable.CircularViewPager_progress_arc_clockwise_outline_color, default_clockwise_outline_color);
+            mCounterClockwiseOutlineArcColor = attributes.getColor(R.styleable.CircularViewPager_progress_arc_counter_clockwise_outline_color, default_counter_clockwise_outline_color);
 
-        mClockwiseReachedArcWidth = attributes.getDimension(R.styleable.CircularViewPager_progress_arc_clockwise_width, default_reached_arc_width);
-        mCounterClockwiseReachedArcWidth = attributes.getDimension(R.styleable.CircularViewPager_progress_arc_counter_clockwise_width, default_reached_arc_width);
-        mClockwiseOutlineArcWidth = attributes.getDimension(R.styleable.CircularViewPager_progress_arc_clockwise_outline_width, default_outline_arc_width);
-        mCounterClockwiseOutlineArcWidth = attributes.getDimension(R.styleable.CircularViewPager_progress_arc_counter_clockwise_outline_width, default_outline_arc_width);
+            mClockwiseReachedArcWidth = attributes.getDimension(R.styleable.CircularViewPager_progress_arc_clockwise_width, default_reached_arc_width);
+            mCounterClockwiseReachedArcWidth = attributes.getDimension(R.styleable.CircularViewPager_progress_arc_counter_clockwise_width, default_reached_arc_width);
+            mClockwiseOutlineArcWidth = attributes.getDimension(R.styleable.CircularViewPager_progress_arc_clockwise_outline_width, default_outline_arc_width);
+            mCounterClockwiseOutlineArcWidth = attributes.getDimension(R.styleable.CircularViewPager_progress_arc_counter_clockwise_outline_width, default_outline_arc_width);
 
 
-        setMax(attributes.getInt(R.styleable.CircularViewPager_progress_arc_max, 100));
-        setProgress(attributes.getInt(R.styleable.CircularViewPager_arc_progress, 0));
+            setMax(attributes.getInt(R.styleable.CircularViewPager_progress_arc_max, 100));
+            setProgress(attributes.getInt(R.styleable.CircularViewPager_arc_progress, 0));
 
-        attributes.recycle();
+            attributes.recycle();
 
-        initializePainters();
+            initializePainters();
+        }
     }
 
     /**
@@ -704,14 +712,13 @@ public class CircularBar extends View {
     }
 
     /**
-     * @param Progress
+     * @param newProgress
      */
-    public void setProgress(float Progress) {
-        this.progress = Progress % getMax();
+    public void setProgress(float newProgress) {
         if (mProgressSweep == null) {
-            this.mProgressSweep = new ProgressSweep(progress);
+            this.mProgressSweep = new ProgressSweep(newProgress);
         } else {
-            mProgressSweep.enforceBounds();
+            mProgressSweep.enforceBounds(newProgress);
             mProgressSweep.updateAngles();
         }
 
@@ -789,22 +796,27 @@ public class CircularBar extends View {
         public float outlineSweep = 360f;
 
         public ProgressSweep(float progress) {
-            CircularBar.this.progress = progress;
-            enforceBounds();
+//            CircularBar.this.progress = progress;
+            enforceBounds(progress);
             updateAngles();
         }
 
         /**
          * Enforce the progress boundary at the max value allowed
          */
-        public void enforceBounds() {
-            progress %= mMax;
+        public void enforceBounds(float newProgress) {
+            if(Math.abs(newProgress) == Math.abs(mMax)){
+                return;
+            }
+            progress = newProgress % mMax;
+//            progress %= mMax;
         }
 
         /**
          * Update the angles of the arcs
          */
         public void updateAngles() {
+            Log.i(TAG, " progress : " + progress);
             if (progress >= 0) {
                 reachedStart = START_12;
                 reachedSweep = progress / mMax * 360f;
@@ -814,6 +826,9 @@ public class CircularBar extends View {
                 //paints
                 mReachedArcPaint = mClockwiseReachedArcPaint;
                 mOutlineArcPaint = mClockwiseOutlineArcPaint;
+
+                Log.i(TAG, " ++ reachedStart : " + reachedStart);
+                Log.i(TAG, " ++ reachedSweep : " + reachedSweep);
             } else {
                 reachedSweep = Math.abs(progress / mMax * 360f);
                 reachedStart = START_12 - reachedSweep;
@@ -823,6 +838,9 @@ public class CircularBar extends View {
                 //paints
                 mReachedArcPaint = mCounterClockwiseReachedArcPaint;
                 mOutlineArcPaint = mCounterClockwiseOutlineArcPaint;
+
+                Log.i(TAG, " -- reachedStart : " + reachedStart);
+                Log.i(TAG, " -- reachedSweep : " + reachedSweep);
 
             }
         }

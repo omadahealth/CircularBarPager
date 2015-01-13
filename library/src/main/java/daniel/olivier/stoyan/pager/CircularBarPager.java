@@ -83,7 +83,7 @@ public class CircularBarPager extends RelativeLayout {
     }
 
     public CircularBarPager(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.CircularBarPagerStyle);
+        this(context, attrs, 0);
     }
 
     public CircularBarPager(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -99,39 +99,50 @@ public class CircularBarPager extends RelativeLayout {
      * Init also some default values as PageTranformer etc...
      */
     private void initializeView(AttributeSet attrs, int defStyleAttr) {
-        final TypedArray attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.CircularViewPager,
-                defStyleAttr, 0);
-        boolean enableOnClick = attributes.getBoolean(R.styleable.CircularViewPager_progress_pager_on_click_enabled, false);
-        isPaddingSet = false;
+        if (attrs != null) {
+            final TypedArray attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.CircularViewPager,
+                    defStyleAttr, 0);
 
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.circularbar_view_pager, this);
+            boolean enableOnClick = attributes.getBoolean(R.styleable.CircularViewPager_progress_pager_on_click_enabled, false);
+            isPaddingSet = false;
 
-        mCircularBar = (CircularBar) view.findViewById(R.id.circular_bar);
-        mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
-        mCirclePageIndicator = (CirclePageIndicator) view.findViewById(R.id.circle_page_indicator);
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.circularbar_view_pager, this);
 
-        //Default init
-        mCircularBar.loadStyledAttributes(attrs, defStyleAttr);
-        mViewPager.setPageTransformer(false, new FadeViewPagerTransformer());
+            mCircularBar = (CircularBar) view.findViewById(R.id.circular_bar);
+            mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
+            mCirclePageIndicator = (CirclePageIndicator) view.findViewById(R.id.circle_page_indicator);
 
-        //If we enable onClick, ie. we can switch between pages with both a swipe and a touch
-        //Touch just goes to the next page % number of pages
-        if(enableOnClick){
-            final GestureDetectorCompat tapGestureDetector = new GestureDetectorCompat(getContext(), new GestureDetector.SimpleOnGestureListener(){
+            //Default init
+            if(mCircularBar != null){
+                mCircularBar.loadStyledAttributes(attrs, defStyleAttr);
+            }
+            if(mViewPager != null){
+                mViewPager.setPageTransformer(false, new FadeViewPagerTransformer());
+            }
 
-                @Override
-                public boolean onSingleTapConfirmed(MotionEvent e) {
-                    mViewPager.setCurrentItem((mViewPager.getCurrentItem() + 1) % mViewPager.getAdapter().getCount());
-                    return super.onSingleTapConfirmed(e);
+
+            //If we enable onClick, ie. we can switch between pages with both a swipe and a touch
+            //Touch just goes to the next page % number of pages
+            if (enableOnClick) {
+                final GestureDetectorCompat tapGestureDetector = new GestureDetectorCompat(getContext(), new GestureDetector.SimpleOnGestureListener() {
+
+                    @Override
+                    public boolean onSingleTapConfirmed(MotionEvent e) {
+                        mViewPager.setCurrentItem((mViewPager.getCurrentItem() + 1) % mViewPager.getAdapter().getCount());
+                        return super.onSingleTapConfirmed(e);
+                    }
+                });
+                if(mViewPager != null){
+                    mViewPager.setOnTouchListener(new OnTouchListener() {
+                        public boolean onTouch(View v, MotionEvent event) {
+                            tapGestureDetector.onTouchEvent(event);
+                            return false;
+                        }
+                    });
                 }
-            });
-            mViewPager.setOnTouchListener(new OnTouchListener() {
-                public boolean onTouch(View v, MotionEvent event) {
-                    tapGestureDetector.onTouchEvent(event);
-                    return false;
-                }
-            });
+
+            }
         }
     }
 
@@ -144,7 +155,7 @@ public class CircularBarPager extends RelativeLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        if (!isPaddingSet) {
+        if (!isPaddingSet && mViewPager != null) {
             int paddingForViewPager = this.getMeasuredWidth() / mPaddingRatio;
             mViewPager.setPadding(paddingForViewPager, mViewPager.getPaddingTop(), paddingForViewPager, mViewPager.getPaddingBottom());
 
@@ -164,25 +175,27 @@ public class CircularBarPager extends RelativeLayout {
 
     /**
      * Method to add a listener to call on animations
+     *
      * @param listener The listener to call
      */
-    public void addListener(Animator.AnimatorListener listener){
+    public void addListener(Animator.AnimatorListener listener) {
         mCircularBar.addListener(listener);
     }
 
     /**
      * Removes the listener provided
+     *
      * @param listener The listener to remove
      * @return True if it was in the list and removed, false otherwise
      */
-    public boolean removeListener(Animator.AnimatorListener listener){
+    public boolean removeListener(Animator.AnimatorListener listener) {
         return mCircularBar.removeListener(listener);
     }
 
     /**
      * Removes all animation listeners
      */
-    public void removeAllListeners(){
+    public void removeAllListeners() {
         mCircularBar.removeAllListeners();
     }
 

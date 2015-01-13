@@ -3,7 +3,7 @@
     <style name="CircularBarPager_Default">
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_width">match_parent</item>
-
+w
         <item name="progress_arc_max">100</item>
         <item name="arc_progress">20</item>
 
@@ -18,6 +18,7 @@
         <item name="progress_arc_counter_clockwise_width">8dp</item>
 
         <item name="progress_pager_on_click_enabled">false</item>
+
     </style>
 
 </resources>

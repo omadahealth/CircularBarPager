@@ -50,7 +50,7 @@ uploadArchives {
             //com.github.traex.rippleeffect:library:1.2.3
             pom.groupId = 'daniel.olivier.stoyan.circularbarpager'
             pom.artifactId = 'circularbarpager'
-            pom.version = '1.0.2'
+            pom.version = '1.1.6'
         }
     }
 }

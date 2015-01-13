@@ -33,7 +33,6 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.daimajia.easing.Glider;
@@ -796,7 +795,6 @@ public class CircularBar extends View {
         public float outlineSweep = 360f;
 
         public ProgressSweep(float progress) {
-//            CircularBar.this.progress = progress;
             enforceBounds(progress);
             updateAngles();
         }
@@ -809,14 +807,12 @@ public class CircularBar extends View {
                 return;
             }
             progress = newProgress % mMax;
-//            progress %= mMax;
         }
 
         /**
          * Update the angles of the arcs
          */
         public void updateAngles() {
-            Log.i(TAG, " progress : " + progress);
             if (progress >= 0) {
                 reachedStart = START_12;
                 reachedSweep = progress / mMax * 360f;
@@ -826,9 +822,6 @@ public class CircularBar extends View {
                 //paints
                 mReachedArcPaint = mClockwiseReachedArcPaint;
                 mOutlineArcPaint = mClockwiseOutlineArcPaint;
-
-                Log.i(TAG, " ++ reachedStart : " + reachedStart);
-                Log.i(TAG, " ++ reachedSweep : " + reachedSweep);
             } else {
                 reachedSweep = Math.abs(progress / mMax * 360f);
                 reachedStart = START_12 - reachedSweep;
@@ -838,10 +831,6 @@ public class CircularBar extends View {
                 //paints
                 mReachedArcPaint = mCounterClockwiseReachedArcPaint;
                 mOutlineArcPaint = mCounterClockwiseOutlineArcPaint;
-
-                Log.i(TAG, " -- reachedStart : " + reachedStart);
-                Log.i(TAG, " -- reachedSweep : " + reachedSweep);
-
             }
         }
     }

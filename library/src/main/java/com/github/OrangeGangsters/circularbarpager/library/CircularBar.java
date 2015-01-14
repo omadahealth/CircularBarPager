@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package daniel.olivier.stoyan.pager;
+package com.github.OrangeGangsters.circularbarpager.library;
 
 
 import android.content.Context;
@@ -43,6 +43,8 @@ import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import daniel.olivier.stoyan.pager.R;
 
 
 /**

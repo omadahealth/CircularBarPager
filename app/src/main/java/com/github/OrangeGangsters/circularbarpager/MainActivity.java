@@ -21,17 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package daniel.olivier.stoyan.circularbarpager;
+package com.github.OrangeGangsters.circularbarpager;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
+import com.github.OrangeGangsters.circularbarpager.library.CircularBarPager;
 import com.nineoldandroids.animation.Animator;
 import com.viewpagerindicator.CirclePageIndicator;
 
-import daniel.olivier.stoyan.pager.CircularBarPager;
+import daniel.olivier.stoyan.circularbarpager.R;
 
 /**
  * Created by stoyan and oliviergoutay on 12/9/14.

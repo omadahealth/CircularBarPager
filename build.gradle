@@ -12,6 +12,10 @@ buildscript {
     }
 }
 
+def isReleaseBuild() {
+    return version.contains("SNAPSHOT") == false
+}
+
 allprojects {
     repositories {
         maven { url 'http://dl.bintray.com/populov/maven/' }

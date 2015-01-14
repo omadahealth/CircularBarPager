@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package daniel.olivier.stoyan.pager.viewpager;
+package com.github.OrangeGangsters.circularbarpager.library.viewpager;
 
 import android.annotation.TargetApi;
 import android.os.Build;

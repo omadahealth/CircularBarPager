@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     style="@style/CircularBarPager_Default">
 
-    <daniel.olivier.stoyan.pager.viewpager.WrapContentViewPager
+    <com.github.OrangeGangsters.circularbarpager.library.viewpager.WrapContentViewPager
         android:id="@+id/view_pager"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/view_pager" />
 
-    <daniel.olivier.stoyan.pager.CircularBar
+    <com.github.OrangeGangsters.circularbarpager.library.CircularBar
         android:id="@+id/circular_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

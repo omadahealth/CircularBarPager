@@ -21,50 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package daniel.olivier.stoyan.pager.viewpager;
+package com.github.OrangeGangsters.circularbarpager;
 
 import android.content.Context;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Created by oliviergoutay on 12/9/14.
  */
-public class WrapContentViewPager extends ViewPager {
+public class DemoPagerAdapter extends PagerAdapter {
 
-    public WrapContentViewPager(Context context) {
-        super(context);
+    private Context mContext;
+    private View[] mViews;
+
+    public DemoPagerAdapter(Context context, View... views) {
+        this.mContext = context;
+        this.mViews = views;
     }
 
-    public WrapContentViewPager(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    /**
-     * Allows to redraw the view size to wrap the content of the bigger child.
-     *
-     * @param widthMeasureSpec  with measured
-     * @param heightMeasureSpec height measured
-     */
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int mode = MeasureSpec.getMode(heightMeasureSpec);
+    public int getCount() {
+        return mViews.length;
+    }
 
-        if (mode == MeasureSpec.UNSPECIFIED || mode == MeasureSpec.AT_MOST) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            int height = 0;
-            for (int i = 0; i < getChildCount(); i++) {
-                View child = getChildAt(i);
-                child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-                int h = child.getMeasuredHeight();
-                if (h > height) {
-                    height = h;
-                }
-            }
-            heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
-        }
+    @Override
+    public Object instantiateItem(ViewGroup collection, int position) {
+        View currentView = mViews[position];
+        ((ViewPager) collection).addView(currentView);
+        return currentView;
+    }
 
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    @Override
+    public void destroyItem(ViewGroup collection, int position, Object view) {
+        ((ViewPager) collection).removeView((View) view);
+    }
+
+    @Override
+    public boolean isViewFromObject(View view, Object object) {
+        return view == object;
     }
 }

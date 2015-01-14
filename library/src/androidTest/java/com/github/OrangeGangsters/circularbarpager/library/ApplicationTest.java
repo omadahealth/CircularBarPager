@@ -1,4 +1,4 @@
-package stoyan.olivier.circularbarpager;
+package com.github.OrangeGangsters.circularbarpager.library;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
@@ -9,5 +9,9 @@ import android.test.ApplicationTestCase;
 public class ApplicationTest extends ApplicationTestCase<Application> {
     public ApplicationTest() {
         super(Application.class);
+    }
+
+    public void testModulo(){
+        assertEquals(-3, -3%5);
     }
 }

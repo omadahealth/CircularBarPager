@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package daniel.olivier.stoyan.pager;
+package com.github.OrangeGangsters.circularbarpager.library;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -36,10 +36,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.github.OrangeGangsters.circularbarpager.library.viewpager.FadeViewPagerTransformer;
 import com.nineoldandroids.animation.Animator;
 import com.viewpagerindicator.CirclePageIndicator;
 
-import daniel.olivier.stoyan.pager.viewpager.FadeViewPagerTransformer;
+import daniel.olivier.stoyan.pager.R;
 
 /**
  * Created by oliviergoutay and stoyan on 12/10/14.
@@ -52,7 +53,7 @@ public class CircularBarPager extends RelativeLayout {
     private Context mContext;
 
     /**
-     * The inflated {@link daniel.olivier.stoyan.pager.CircularBar}
+     * The inflated {@link CircularBar}
      */
     private CircularBar mCircularBar;
 
@@ -94,7 +95,7 @@ public class CircularBarPager extends RelativeLayout {
     }
 
     /**
-     * Init the view by getting the {@link daniel.olivier.stoyan.pager.CircularBar},
+     * Init the view by getting the {@link CircularBar},
      * the {@link android.support.v4.view.ViewPager} and the {@link com.viewpagerindicator.CirclePageIndicator}.
      * Init also some default values as PageTranformer etc...
      */
@@ -149,7 +150,7 @@ public class CircularBarPager extends RelativeLayout {
     /**
      * Apply a {@link android.support.v4.view.ViewPager#setPadding(int, int, int, int)} and
      * {@link android.support.v4.view.ViewPager#setPageMargin(int)} in order to get a nicer animation
-     * on the {@link android.support.v4.view.ViewPager} inside the {@link daniel.olivier.stoyan.pager.CircularBar}
+     * on the {@link android.support.v4.view.ViewPager} inside the {@link CircularBar}
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

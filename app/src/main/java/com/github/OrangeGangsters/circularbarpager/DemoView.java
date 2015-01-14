@@ -21,11 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package daniel.olivier.stoyan.circularbarpager;
+package com.github.OrangeGangsters.circularbarpager;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
+
+import daniel.olivier.stoyan.circularbarpager.R;
 
 /**
  * Created by oliviergoutay on 12/8/14.

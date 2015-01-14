@@ -92,34 +92,9 @@ afterEvaluate { project ->
         sign configurations.archives
     }
 
-    task apklib(type: Zip){        appendix = extension = 'apklib'
-
-        from 'AndroidManifest.xml'
-        into('res') {
-            from 'res'
-        }
-        into('src') {
-            from 'src'
-        }
-    }
-
-    task clearJar(type: Delete){
-        delete 'build/libs/library.jar'
-    }
-
-    task makeJar(type: Copy, dependsOn: clearJar){
-        from('build/intermediates/bundles/release/')
-        into('build/libs/')
-        include('classes.jar')
-        rename('classes.jar','library.jar')
-    }
-
-    def jar = file('build/libs/library.jar')
-
-
-    task androidJavadocs(type: Javadoc, dependsOn: makeJar) {
-        source = android.sourceSets.main
-        classpath += project.files(android.getBootClasspath() .join(File.pathSeparator))
+    task androidJavadocs(type: Javadoc) {
+        source = android.sourceSets.main.java.srcDirs
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
     }
 
     task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
@@ -129,13 +104,11 @@ afterEvaluate { project ->
 
     task androidSourcesJar(type: Jar) {
         classifier = 'sources'
-        from android.sourceSets.main
+        from android.sourceSets.main.java.sourceFiles
     }
 
     artifacts {
         archives androidSourcesJar
         archives androidJavadocsJar
-        archives apklib
-        archives jar
     }
 }

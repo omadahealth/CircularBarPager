@@ -13,10 +13,10 @@ To include in your project, add this to your build.gradle file:
 
 ========
 ### By
-####    Developers:
+Developers:
         [Olivier Goutay](https://github.com/olivierg13) and [Stoyan Dimitrov](https://github.com/StoyanD)
 
-####    Designers:
+Designers:
         [Daniel Waldron](http://danielwaldron.com/)
 
 ### Usage

@@ -1,8 +1,14 @@
 CircularBarPager
 ================
 
-A Lollipop material design styled CircularBarPager library (API 10+)
+A Lollipop material design styled CircularBarPager library (API 10+). 
 
+To include in your project, add this to your build.gradle file:
+
+```
+   //CircularBarPager
+   compile 'com.github.orangegangsters:library:1.0.0@aar'
+```
 ![Demo](app/src/main/res/raw/github_gif.gif)
 
 ========

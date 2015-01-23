@@ -12,6 +12,8 @@ To include in your project, add this to your build.gradle file:
 ![Demo](app/src/main/res/raw/github_gif.gif)
 
 ========
+### By
+![Olivier Goutay](https://github.com/olivierg13) and ![Stoyan Dimitrov](https://github.com/StoyanD)
 
 ### Usage
 

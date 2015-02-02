@@ -11,6 +11,18 @@ A Lollipop material design styled CircularBarPager library (API 10+)
 
 Look at the example app for a live example on how to use the library.
 
+#### Preparing dependencies
+
+In order to use the CirclePageIndicator by Square, you need to add a repo to your main build.gradle file:
+```
+allprojects {
+    repositories {
+        maven { url 'http://dl.bintray.com/populov/maven/' }
+        jcenter()
+    }
+}
+```
+
 #### In XML:
 
 ```

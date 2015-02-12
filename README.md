@@ -1,4 +1,4 @@
-CircularBarPager
+CircularBarPager [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-CircularBarPager-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1426)
 ================
 
 A Lollipop material design styled CircularBarPager library (API 10+). 
@@ -10,8 +10,6 @@ To include in your project, add this to your build.gradle file:
    compile 'com.github.orangegangsters:library:1.0.0@aar'
 ```
 ![Demo](app/src/main/res/raw/github_gif.gif)
-
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-CircularBarPager-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1426)
 
 ========
 ### By

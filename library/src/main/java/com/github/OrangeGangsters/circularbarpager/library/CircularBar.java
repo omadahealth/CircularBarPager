@@ -50,7 +50,7 @@ import daniel.olivier.stoyan.pager.R;
 /**
  * Created by stoyan and olivier on 12/9/14.
  */
-public class CircularBar extends View implements Animator.AnimatorListener{
+public class CircularBar extends View implements Animator.AnimatorListener {
     /**
      * TAG for logging
      */
@@ -173,6 +173,11 @@ public class CircularBar extends View implements Animator.AnimatorListener{
     private RectF mFillCircleRectF = new RectF(0, 0, 0, 0);
 
     /**
+     * Determine if need to draw the start line
+     */
+    private boolean mStartLineEnabled;
+
+    /**
      * Determine if need to draw outline area
      */
     private boolean mDrawOutlineArc = true;
@@ -223,6 +228,7 @@ public class CircularBar extends View implements Animator.AnimatorListener{
      * For save and restore instance of progressbar
      */
     private static final String INSTANCE_STATE = "saved_instance";
+    private static final String INSTANCE_START_LINE_ENABLED = "progress_start_line_enabled";
     private static final String INSTANCE_CLOCKWISE_REACHED_BAR_HEIGHT = "clockwise_reached_bar_height";
     private static final String INSTANCE_CLOCKWISE_REACHED_BAR_COLOR = "clockwise_reached_bar_color";
     private static final String INSTANCE_CLOCKWISE_OUTLINE_BAR_HEIGHT = "clockwise_outline_bar_height";
@@ -270,8 +276,10 @@ public class CircularBar extends View implements Animator.AnimatorListener{
         if (mDrawReachedArc) {
             //Draw the bar
             canvas.drawArc(mReachedArcRectF, mProgressSweep.reachedStart, mProgressSweep.reachedSweep, false, mReachedArcPaint);
-            //Draw the bar start line
-            canvas.drawLine(mReachedArcRectF.centerX(), mReachedArcRectF.top - mClockwiseReachedArcWidth / 2, mReachedArcRectF.centerX() + 1, mReachedArcRectF.top + mClockwiseReachedArcWidth * 1.5f, mOutlineArcPaint);
+            if (mStartLineEnabled) {
+                //Draw the bar start line
+                canvas.drawLine(mReachedArcRectF.centerX(), mReachedArcRectF.top - mClockwiseReachedArcWidth / 2, mReachedArcRectF.centerX() + 1, mReachedArcRectF.top + mClockwiseReachedArcWidth * 1.5f, mOutlineArcPaint);
+            }
         }
 
         if (mDrawOutlineArc) {
@@ -279,7 +287,7 @@ public class CircularBar extends View implements Animator.AnimatorListener{
             canvas.drawArc(mOutlineArcRectF, mProgressSweep.outlineStart, mProgressSweep.outlineSweep, false, mOutlineArcPaint);
         }
 
-        if(mCircleFillEnabled) {
+        if (mCircleFillEnabled) {
             //Fill the circle
             canvas.drawArc(mFillCircleRectF, mProgressSweep.reachedStart, mProgressSweep.reachedSweep, true, mCircleFillPaint);
         }
@@ -289,6 +297,7 @@ public class CircularBar extends View implements Animator.AnimatorListener{
     protected Parcelable onSaveInstanceState() {
         final Bundle bundle = new Bundle();
         bundle.putParcelable(INSTANCE_STATE, super.onSaveInstanceState());
+        bundle.putBoolean(INSTANCE_START_LINE_ENABLED, isStartLineEnabled());
         bundle.putFloat(INSTANCE_CLOCKWISE_REACHED_BAR_HEIGHT, getClockwiseReachedArcWidth());
         bundle.putFloat(INSTANCE_CLOCKWISE_OUTLINE_BAR_HEIGHT, getClockwiseOutlineArcWidth());
         bundle.putInt(INSTANCE_CLOCKWISE_REACHED_BAR_COLOR, getClockwiseReachedArcColor());
@@ -310,6 +319,7 @@ public class CircularBar extends View implements Animator.AnimatorListener{
     protected void onRestoreInstanceState(Parcelable state) {
         if (state instanceof Bundle) {
             final Bundle bundle = (Bundle) state;
+            mStartLineEnabled = bundle.getBoolean(INSTANCE_START_LINE_ENABLED);
             mClockwiseReachedArcWidth = bundle.getFloat(INSTANCE_CLOCKWISE_REACHED_BAR_HEIGHT);
             mClockwiseOutlineArcWidth = bundle.getFloat(INSTANCE_CLOCKWISE_OUTLINE_BAR_HEIGHT);
             mClockwiseArcColor = bundle.getInt(INSTANCE_CLOCKWISE_REACHED_BAR_COLOR);
@@ -341,6 +351,8 @@ public class CircularBar extends View implements Animator.AnimatorListener{
         if (attrs != null) {
             final TypedArray attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.CircularViewPager,
                     defStyleAttr, 0);
+
+            mStartLineEnabled = attributes.getBoolean(R.styleable.CircularViewPager_progress_start_line_enabled, true);
 
             mClockwiseArcColor = attributes.getColor(R.styleable.CircularViewPager_progress_arc_clockwise_color, default_clockwise_reached_color);
             mCounterClockwiseArcColor = attributes.getColor(R.styleable.CircularViewPager_progress_arc_counter_clockwise_color, default_counter_clockwise_reached_color);
@@ -561,6 +573,15 @@ public class CircularBar extends View implements Animator.AnimatorListener{
      */
     public String getPrefix() {
         return mPrefix;
+    }
+
+    /**
+     * The boolean that indicates if we must draw the start line or not
+     *
+     * @return
+     */
+    public boolean isStartLineEnabled() {
+        return mStartLineEnabled;
     }
 
     /**
@@ -893,7 +914,7 @@ public class CircularBar extends View implements Animator.AnimatorListener{
          * Enforce the progress boundary at the max value allowed
          */
         public void enforceBounds(float newProgress) {
-            if(Math.abs(newProgress) == Math.abs(mMax)){
+            if (Math.abs(newProgress) == Math.abs(mMax)) {
                 return;
             }
             progress = newProgress % mMax;

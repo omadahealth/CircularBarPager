@@ -14,6 +14,7 @@
         <attr name="progress_arc_clockwise_width" format="dimension"/>
         <attr name="progress_arc_counter_clockwise_width" format="dimension"/>
 
+        <attr name="progress_start_line_enabled" format="boolean"/>
         <attr name="progress_pager_on_click_enabled" format="boolean"/>
 
         <attr name="progress_pager_fill_circle_color" format="color"/>

@@ -3,4 +3,5 @@
     <color name="very_light_grey">#e4e7ed</color>
     <color name="light_grey">#c4c9cc</color>
     <color name="transparent">#00000000</color>
+    <color name="light_teal">#ff9bbbba</color>
 </resources>

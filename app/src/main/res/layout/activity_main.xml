@@ -13,6 +13,7 @@
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
         android:layout_centerInParent="true"
+        app:progress_pager_fill_circle_color="@color/light_teal"
         style="@style/CircularBarPagerStyle"/>
 
 </RelativeLayout>

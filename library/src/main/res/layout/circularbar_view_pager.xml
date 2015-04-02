@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/CircularBarPager_Default">
 
+    <com.github.OrangeGangsters.circularbarpager.library.CircularBar
+        android:id="@+id/circular_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        style="@style/CircularBarPager_Default"/>
+    
     <com.github.OrangeGangsters.circularbarpager.library.viewpager.WrapContentViewPager
         android:id="@+id/view_pager"
         android:layout_width="wrap_content"
@@ -20,11 +28,5 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/view_pager" />
 
-    <com.github.OrangeGangsters.circularbarpager.library.CircularBar
-        android:id="@+id/circular_bar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        style="@style/CircularBarPager_Default"/>
 
 </RelativeLayout>

@@ -50,7 +50,7 @@ import daniel.olivier.stoyan.pager.R;
 /**
  * Created by stoyan and olivier on 12/9/14.
  */
-public class CircularBar extends View {
+public class CircularBar extends View implements Animator.AnimatorListener{
     /**
      * TAG for logging
      */
@@ -96,6 +96,11 @@ public class CircularBar extends View {
      * The counter clockwise bar outline area color.
      */
     private int mCounterClockwiseOutlineArcColor;
+
+    /**
+     * The color to fill the circle center
+     */
+    private int mCircleFillColor;
 
     /**
      * The clockwise width of the reached area
@@ -147,6 +152,10 @@ public class CircularBar extends View {
      */
     private Paint mCounterClockwiseOutlineArcPaint;
 
+    /**
+     * The Painter of the fill circle.
+     */
+    private Paint mCircleFillPaint;
 
     /**
      * The reached bar area rect.
@@ -159,6 +168,11 @@ public class CircularBar extends View {
     private RectF mOutlineArcRectF = new RectF(0, 0, 0, 0);
 
     /**
+     * The fill circle area
+     */
+    private RectF mFillCircleRectF = new RectF(0, 0, 0, 0);
+
+    /**
      * Determine if need to draw outline area
      */
     private boolean mDrawOutlineArc = true;
@@ -167,6 +181,11 @@ public class CircularBar extends View {
      * We should always draw reached area
      */
     private boolean mDrawReachedArc = true;
+
+    /**
+     * Indicates if we need to fill the circle
+     */
+    private boolean mCircleFillEnabled = false;
 
     /**
      * The progress angles of the {@link #mOutlineArcRectF} and
@@ -196,6 +215,7 @@ public class CircularBar extends View {
     private final int default_clockwise_outline_color = Color.parseColor("#00c853");
     private final int default_counter_clockwise_reached_color = Color.parseColor("#ffffff");
     private final int default_counter_clockwise_outline_color = Color.parseColor("#ffffff");
+    private final int default_circle_fill_color = Color.parseColor("#00000000");//fully transparent
     private final float default_reached_arc_width;
     private final float default_outline_arc_width;
 
@@ -211,6 +231,8 @@ public class CircularBar extends View {
     private static final String INSTANCE_COUNTER_CLOCKWISE_REACHED_BAR_COLOR = "counter_clockwise_reached_bar_color";
     private static final String INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_HEIGHT = "counter_clockwise_outline_bar_height";
     private static final String INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_COLOR = "counter_clockwise_outline_bar_color";
+    private static final String INSTANCE_CIRCLE_FILL_ENABLED = "progress_pager_fill_circle_enabled";
+    private static final String INSTANCE_CIRCLE_FILL_COLOR = "progress_pager_fill_circle_color";
     private static final String INSTANCE_MAX = "max";
     private static final String INSTANCE_PROGRESS = "progress";
     private static final String INSTANCE_SUFFIX = "suffix";
@@ -256,6 +278,11 @@ public class CircularBar extends View {
             //Draw the outline bar
             canvas.drawArc(mOutlineArcRectF, mProgressSweep.outlineStart, mProgressSweep.outlineSweep, false, mOutlineArcPaint);
         }
+
+        if(mCircleFillEnabled) {
+            //Fill the circle
+            canvas.drawArc(mFillCircleRectF, mProgressSweep.reachedStart, mProgressSweep.reachedSweep, true, mCircleFillPaint);
+        }
     }
 
     @Override
@@ -270,6 +297,8 @@ public class CircularBar extends View {
         bundle.putFloat(INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_HEIGHT, getCounterClockwiseOutlineArcWidth());
         bundle.putInt(INSTANCE_COUNTER_CLOCKWISE_REACHED_BAR_COLOR, getCounterClockwiseReachedArcColor());
         bundle.putInt(INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_COLOR, getCounterClockwiseOutlineArcColor());
+        bundle.putBoolean(INSTANCE_CIRCLE_FILL_ENABLED, isCircleFillEnabled());
+        bundle.putInt(INSTANCE_CIRCLE_FILL_COLOR, getCircleFillColor());
         bundle.putInt(INSTANCE_MAX, getMax());
         bundle.putFloat(INSTANCE_PROGRESS, getProgress());
         bundle.putString(INSTANCE_SUFFIX, getSuffix());
@@ -289,6 +318,8 @@ public class CircularBar extends View {
             mCounterClockwiseOutlineArcWidth = bundle.getFloat(INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_HEIGHT);
             mCounterClockwiseArcColor = bundle.getInt(INSTANCE_COUNTER_CLOCKWISE_REACHED_BAR_COLOR);
             mCounterClockwiseOutlineArcColor = bundle.getInt(INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_COLOR);
+            mCircleFillEnabled = bundle.getBoolean(INSTANCE_CIRCLE_FILL_ENABLED);
+            mCircleFillColor = bundle.getInt(INSTANCE_CIRCLE_FILL_COLOR);
             initializePainters();
             setMax(bundle.getInt(INSTANCE_MAX));
             setProgress(bundle.getFloat(INSTANCE_PROGRESS));
@@ -321,6 +352,8 @@ public class CircularBar extends View {
             mClockwiseOutlineArcWidth = attributes.getDimension(R.styleable.CircularViewPager_progress_arc_clockwise_outline_width, default_outline_arc_width);
             mCounterClockwiseOutlineArcWidth = attributes.getDimension(R.styleable.CircularViewPager_progress_arc_counter_clockwise_outline_width, default_outline_arc_width);
 
+            mCircleFillColor = attributes.getColor(R.styleable.CircularViewPager_progress_pager_fill_circle_color, default_circle_fill_color);
+            mCircleFillEnabled = mCircleFillColor != default_circle_fill_color;
 
             setMax(attributes.getInt(R.styleable.CircularViewPager_progress_arc_max, 100));
             setProgress(attributes.getInt(R.styleable.CircularViewPager_arc_progress, 0));
@@ -366,6 +399,7 @@ public class CircularBar extends View {
     private void calculateDrawRectF() {
         mReachedArcRectF = getArcRect(mClockwiseReachedArcWidth / 2);
         mOutlineArcRectF = getArcRect(mClockwiseOutlineArcWidth / 2);
+        mFillCircleRectF = getArcRect(mClockwiseReachedArcWidth);
     }
 
     /**
@@ -420,9 +454,37 @@ public class CircularBar extends View {
         mCounterClockwiseOutlineArcPaint.setStrokeWidth(mCounterClockwiseOutlineArcWidth);
         mCounterClockwiseOutlineArcPaint.setStyle(Paint.Style.STROKE);
 
+        mCircleFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mCircleFillPaint.setColor(mCircleFillColor);
+        mCircleFillPaint.setAntiAlias(true);
+        mCircleFillPaint.setStyle(Paint.Style.FILL);
+
         //Defaults
         mReachedArcPaint = mClockwiseReachedArcPaint;
         mOutlineArcPaint = mClockwiseOutlineArcPaint;
+    }
+
+    @Override
+    public void onAnimationStart(Animator animation) {
+
+    }
+
+    @Override
+    public void onAnimationEnd(Animator animation) {
+        //Round off the sweep angles that can result from rounding errors at the end
+        mProgressSweep.reachedSweep = Math.round(mProgressSweep.reachedSweep);
+        mProgressSweep.outlineSweep = Math.round(mProgressSweep.outlineSweep);
+        invalidate();
+    }
+
+    @Override
+    public void onAnimationCancel(Animator animation) {
+
+    }
+
+    @Override
+    public void onAnimationRepeat(Animator animation) {
+
     }
 
     /**
@@ -449,6 +511,7 @@ public class CircularBar extends View {
      */
     protected AnimatorSet addListenersToSet(AnimatorSet set) {
         if (mListeners != null && set != null) {
+            set.addListener(this);
             for (Animator.AnimatorListener listener : mListeners) {
                 set.addListener(listener);
             }
@@ -573,6 +636,15 @@ public class CircularBar extends View {
     }
 
     /**
+     * The color to fill the circle center
+     *
+     * @return
+     */
+    public int getCircleFillColor() {
+        return mCircleFillColor;
+    }
+
+    /**
      * Get the height of the {@link #mCounterClockwiseReachedArcWidth}
      *
      * @return
@@ -588,6 +660,10 @@ public class CircularBar extends View {
      */
     public float getCounterClockwiseOutlineArcWidth() {
         return mCounterClockwiseOutlineArcWidth;
+    }
+
+    public boolean isCircleFillEnabled() {
+        return mCircleFillEnabled;
     }
 
     /**
@@ -620,6 +696,18 @@ public class CircularBar extends View {
         initializePainters();
         invalidate();
     }
+
+    /**
+     * Sets the {@link #mCircleFillColor} and invalidates the view
+     *
+     * @param color The hex color to set
+     */
+    public void setCircleFillColor(int color) {
+        this.mCircleFillColor = color;
+        initializePainters();
+        invalidate();
+    }
+
 
     /**
      * Sets the {@link #mCounterClockwiseArcColor} and invalidates the view

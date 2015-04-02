@@ -64,6 +64,10 @@ allprojects {
         <item name="progress_arc_counter_clockwise_outline_width">0.75dp</item>
         <item name="progress_arc_clockwise_width">8dp</item>
         <item name="progress_arc_counter_clockwise_width">8dp</item>
+        
+        <item name="progress_start_line_enabled">true</item>
+        <item name="progress_pager_on_click_enabled">true</item>
+        <item name="progress_pager_fill_circle_color">#00000000</item>
 </style>
 ```
 
@@ -84,6 +88,9 @@ You can change several attributes in the XML file:
 * app:progress_arc_counter_clockwise_width [integer dp] --> The width size of the color in counter-clockwise mode
 * app:progress_arc_counter_clockwise_outline_width [integer dp] --> The width size of the outline color in counter-clockwise mode
 * app:progress_pager_on_click_enabled [boolean] --> The boolean that enables or disables the click enabled (on click, changes page)
+* app:progress_start_line_enabled [boolean] --> The boolean that enables the line that displays the starting position of the pager
+* app:progress_pager_on_click_enabled [boolean] --> The boolean that enables the user to change pages with a click as well as a slide
+* app:progress_pager_fill_circle_color [color hex] --> The color to fill the circle, transparent as default
 
 
 You can access every components programmatically by getting the CircularBarPager object:

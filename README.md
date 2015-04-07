@@ -7,7 +7,7 @@ To include in your project, add this to your build.gradle file:
 
 ```
    //CircularBarPager
-   compile 'com.github.orangegangsters:library:1.0.0@aar'
+   compile 'com.github.orangegangsters:library:1.2.0@aar'
 ```
 ![Demo](app/src/main/res/raw/github_gif.gif)
 
@@ -91,6 +91,7 @@ You can change several attributes in the XML file:
 * app:progress_start_line_enabled [boolean] --> The boolean that enables the line that displays the starting position of the pager
 * app:progress_pager_on_click_enabled [boolean] --> The boolean that enables the user to change pages with a click as well as a slide
 * app:progress_pager_fill_circle_color [color hex] --> The color to fill the circle, transparent as default
+* app:progress_pager_fill_mode [enum int] --> The mode to fill the circle, "default_mode" or "pie_mode"
 
 
 You can access every components programmatically by getting the CircularBarPager object:

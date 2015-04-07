@@ -13,7 +13,8 @@
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
         android:layout_centerInParent="true"
-        app:progress_pager_fill_circle_color="@color/transparent"
+        app:progress_pager_fill_circle_color="@android:color/transparent"
+        app:progress_pager_fill_mode="pie_mode"
         style="@style/CircularBarPager_Default"/>
 
 </RelativeLayout>

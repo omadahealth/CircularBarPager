@@ -18,6 +18,10 @@
         <attr name="progress_pager_on_click_enabled" format="boolean"/>
 
         <attr name="progress_pager_fill_circle_color" format="color"/>
+        <attr name="progress_pager_fill_mode" format="enum">
+            <enum name="default_mode" value="0"/>
+            <enum name="pie_mode" value="1"/>
+        </attr>
 
     </declare-styleable>
 

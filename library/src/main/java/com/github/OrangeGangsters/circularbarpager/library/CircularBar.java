@@ -416,7 +416,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
 
             mCircleFillColor = attributes.getColor(R.styleable.CircularViewPager_progress_pager_fill_circle_color, default_circle_fill_color);
             mCircleFillMode = attributes.getInt(R.styleable.CircularViewPager_progress_pager_fill_mode, default_circle_fill_mode);
-            mCircleFillEnabled = mCircleFillColor != default_circle_fill_color;
+            cicleFillEnable(mCircleFillColor != default_circle_fill_color);
 
             setMax(attributes.getInt(R.styleable.CircularViewPager_progress_arc_max, 100));
             setProgress(attributes.getInt(R.styleable.CircularViewPager_arc_progress, 0));
@@ -734,10 +734,21 @@ public class CircularBar extends View implements Animator.AnimatorListener {
         return mCounterClockwiseOutlineArcWidth;
     }
 
+    /**
+     * Sets whether the circle drawn inside and filled.
+     * @return
+     */
     public boolean isCircleFillEnabled() {
         return mCircleFillEnabled;
     }
 
+    /**
+     * Sets the enabled state of the circle fill
+     * @param enable
+     */
+    public void cicleFillEnable(boolean enable){
+        mCircleFillEnabled = enable;
+    }
     /**
      * Sets the {@link #mCounterClockwiseOutlineArcWidth} and invalidates the view
      *
@@ -776,6 +787,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
      */
     public void setCircleFillColor(int color) {
         this.mCircleFillColor = color;
+        cicleFillEnable(mCircleFillColor != default_circle_fill_color);
         initializePainters();
         invalidate();
     }

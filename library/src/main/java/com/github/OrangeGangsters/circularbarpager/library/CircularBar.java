@@ -792,6 +792,16 @@ public class CircularBar extends View implements Animator.AnimatorListener {
         invalidate();
     }
 
+    /**
+     * Sets the {@link #mStartLineEnabled} and invalidates the view. {@link #mStartLineEnabled}
+     * defaults to true
+     *
+     * @param startLineEnabled True to display the line, false otherwise.
+     */
+    public void setStartLineEnabled(boolean startLineEnabled) {
+        this.mStartLineEnabled = startLineEnabled;
+        invalidate();
+    }
 
     /**
      * Sets the {@link #mCounterClockwiseArcColor} and invalidates the view

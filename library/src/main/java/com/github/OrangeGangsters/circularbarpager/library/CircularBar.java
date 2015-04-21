@@ -178,6 +178,11 @@ public class CircularBar extends View implements Animator.AnimatorListener {
     private RectF mFillCircleRectF = new RectF(0, 0, 0, 0);
 
     /**
+     * The diameter of the circle that will be drawn. Computed in {@link #getArcRect(float)}
+     */
+    private float mDiameter;
+
+    /**
      * Determine if need to draw the start line
      */
     private boolean mStartLineEnabled;
@@ -225,20 +230,21 @@ public class CircularBar extends View implements Animator.AnimatorListener {
      * of the {@link #mReachedArcPaint}
      */
     public enum CircleFillMode {
-        DEFAULT (0),
-        PIE (1);
+        DEFAULT(0),
+        PIE(1);
 
         private int value;
+
         CircleFillMode(int val) {
             this.value = val;
         }
 
-        public final int getValue(){
+        public final int getValue() {
             return this.value;
         }
 
-        public static CircleFillMode getMode(int val){
-            switch (val){
+        public static CircleFillMode getMode(int val) {
+            switch (val) {
                 case 1:
                     return PIE;
                 case 0:
@@ -312,7 +318,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
 
         //Draw the fill first so that it does not overlap the arcs
         if (mCircleFillEnabled) {
-            switch (CircleFillMode.getMode(mCircleFillMode)){
+            switch (CircleFillMode.getMode(mCircleFillMode)) {
                 case PIE:
                     //Fill the circle to the point of the reached sweep
                     canvas.drawArc(mFillCircleRectF, mProgressSweep.reachedStart, mProgressSweep.reachedSweep, true, mCircleFillPaint);
@@ -460,9 +466,9 @@ public class CircularBar extends View implements Animator.AnimatorListener {
      * {@link #mReachedArcRectF}
      */
     private void calculateDrawRectF() {
+        mFillCircleRectF = getArcRect(mClockwiseReachedArcWidth);
         mReachedArcRectF = getArcRect(mClockwiseReachedArcWidth / 2);
         mOutlineArcRectF = getArcRect(mClockwiseOutlineArcWidth / 2);
-        mFillCircleRectF = getArcRect(mClockwiseReachedArcWidth);
     }
 
     /**
@@ -481,7 +487,9 @@ public class CircularBar extends View implements Animator.AnimatorListener {
 
         float width = workingSurface.right - workingSurface.left;
         float height = workingSurface.bottom - workingSurface.top;
-        float radius = Math.min(width, height) / 2;
+
+        this.mDiameter = Math.min(width, height);
+        float radius = mDiameter / 2;
         float centerX = width / 2;
         float centerY = height / 2;
 
@@ -636,6 +644,15 @@ public class CircularBar extends View implements Animator.AnimatorListener {
     }
 
     /**
+     * The float computed in {@link #getArcRect(float)} that is the diameter of the drawn circle.
+     *
+     * @return
+     */
+    public float getDiameter() {
+        return mDiameter;
+    }
+
+    /**
      * The clockwise outline arc color
      *
      * @return
@@ -736,6 +753,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
 
     /**
      * Sets whether the circle drawn inside and filled.
+     *
      * @return
      */
     public boolean isCircleFillEnabled() {
@@ -744,11 +762,13 @@ public class CircularBar extends View implements Animator.AnimatorListener {
 
     /**
      * Sets the enabled state of the circle fill
+     *
      * @param enable
      */
-    public void cicleFillEnable(boolean enable){
+    public void cicleFillEnable(boolean enable) {
         mCircleFillEnabled = enable;
     }
+
     /**
      * Sets the {@link #mCounterClockwiseOutlineArcWidth} and invalidates the view
      *

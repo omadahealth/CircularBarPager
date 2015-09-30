@@ -67,4 +67,9 @@ public class WrapContentViewPager extends ViewPager {
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
+
+    @Override
+    protected int getChildDrawingOrder(int childCount, int i) {
+        return i;
+    }
 }

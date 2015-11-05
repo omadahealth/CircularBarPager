@@ -26,6 +26,7 @@ package com.github.OrangeGangsters.circularbarpager.library.viewpager;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -39,6 +40,30 @@ public class WrapContentViewPager extends ViewPager {
 
     public WrapContentViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    /**
+     * Fixes for "java.lang.IndexOutOfBoundsException Invalid index 0, size is 0"
+     * on "android.support.v4.view.ViewPager.performDrag"
+     */
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        if (getAdapter() == null || getAdapter().getCount() == 0) {
+            return false;
+        }
+        return super.onInterceptTouchEvent(event);
+    }
+
+    /**
+     * Fixes for "java.lang.IndexOutOfBoundsException Invalid index 0, size is 0"
+     * on "android.support.v4.view.ViewPager.performDrag"
+     */
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (getAdapter() == null || getAdapter().getCount() == 0) {
+            return false;
+        }
+        return super.onTouchEvent(ev);
     }
 
     /**

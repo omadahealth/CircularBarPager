@@ -26,6 +26,7 @@ package com.github.OrangeGangsters.circularbarpager.library.viewpager;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -33,6 +34,8 @@ import android.view.View;
  * Created by oliviergoutay on 12/9/14.
  */
 public class WrapContentViewPager extends ViewPager {
+
+    private static final String TAG = "WrapContentViewPager";
 
     public WrapContentViewPager(Context context) {
         super(context);
@@ -48,10 +51,15 @@ public class WrapContentViewPager extends ViewPager {
      */
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        if (getAdapter() == null || getAdapter().getCount() == 0) {
+        try {
+            if (getAdapter() == null || getAdapter().getCount() == 0) {
+                return false;
+            }
+            return super.onInterceptTouchEvent(event);
+        } catch (IndexOutOfBoundsException e) {
+            Log.e(TAG, "index out of bound, even if we check the adapter before " + e.toString());
             return false;
         }
-        return super.onInterceptTouchEvent(event);
     }
 
     /**
@@ -60,10 +68,15 @@ public class WrapContentViewPager extends ViewPager {
      */
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (getAdapter() == null || getAdapter().getCount() == 0) {
+        try {
+            if (getAdapter() == null || getAdapter().getCount() == 0) {
+                return false;
+            }
+            return super.onTouchEvent(ev);
+        } catch (IndexOutOfBoundsException e) {
+            Log.e(TAG, "index out of bound, even if we check the adapter before " + e.toString());
             return false;
         }
-        return super.onTouchEvent(ev);
     }
 
     /**

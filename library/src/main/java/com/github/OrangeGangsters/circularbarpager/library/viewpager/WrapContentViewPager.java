@@ -52,7 +52,7 @@ public class WrapContentViewPager extends ViewPager {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
         try {
-            if (getAdapter() == null || getAdapter().getCount() == 0) {
+            if (event == null || getAdapter() == null || getAdapter().getCount() == 0) {
                 return false;
             }
             return super.onInterceptTouchEvent(event);
@@ -69,7 +69,7 @@ public class WrapContentViewPager extends ViewPager {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         try {
-            if (getAdapter() == null || getAdapter().getCount() == 0) {
+            if (ev == null || getAdapter() == null || getAdapter().getCount() == 0) {
                 return false;
             }
             return super.onTouchEvent(ev);
@@ -94,10 +94,12 @@ public class WrapContentViewPager extends ViewPager {
             int height = 0;
             for (int i = 0; i < getChildCount(); i++) {
                 View child = getChildAt(i);
-                child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-                int h = child.getMeasuredHeight();
-                if (h > height) {
-                    height = h;
+                if (child != null) {
+                    child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+                    int h = child.getMeasuredHeight();
+                    if (h > height) {
+                        height = h;
+                    }
                 }
             }
             heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);

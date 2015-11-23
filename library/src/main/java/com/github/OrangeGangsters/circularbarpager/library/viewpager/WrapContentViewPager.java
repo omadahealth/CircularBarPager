@@ -56,8 +56,9 @@ public class WrapContentViewPager extends ViewPager {
                 return false;
             }
             return super.onInterceptTouchEvent(event);
-        } catch (IndexOutOfBoundsException e) {
-            Log.e(TAG, "index out of bound, even if we check the adapter before " + e.toString());
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Exception during WrapContentViewPager onTouchEvent: " +
+                    "index out of bound, or nullpointer even if we check the adapter before " + e.toString());
             return false;
         }
     }
@@ -73,8 +74,9 @@ public class WrapContentViewPager extends ViewPager {
                 return false;
             }
             return super.onTouchEvent(ev);
-        } catch (IndexOutOfBoundsException e) {
-            Log.e(TAG, "index out of bound, even if we check the adapter before " + e.toString());
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Exception during WrapContentViewPager onTouchEvent: " +
+                    "index out of bound, or nullpointer even if we check the adapter before " + e.toString());
             return false;
         }
     }
@@ -87,25 +89,29 @@ public class WrapContentViewPager extends ViewPager {
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int mode = MeasureSpec.getMode(heightMeasureSpec);
+        try {
+            int mode = MeasureSpec.getMode(heightMeasureSpec);
 
-        if (mode == MeasureSpec.UNSPECIFIED || mode == MeasureSpec.AT_MOST) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            int height = 0;
-            for (int i = 0; i < getChildCount(); i++) {
-                View child = getChildAt(i);
-                if (child != null) {
-                    child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-                    int h = child.getMeasuredHeight();
-                    if (h > height) {
-                        height = h;
+            if (mode == MeasureSpec.UNSPECIFIED || mode == MeasureSpec.AT_MOST) {
+                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+                int height = 0;
+                for (int i = 0; i < getChildCount(); i++) {
+                    View child = getChildAt(i);
+                    if (child != null) {
+                        child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+                        int h = child.getMeasuredHeight();
+                        if (h > height) {
+                            height = h;
+                        }
                     }
                 }
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
             }
-            heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
-        }
 
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Exception during WrapContentViewPager onMeasure " + e.toString());
+        }
     }
 
     @Override

@@ -26,12 +26,16 @@ package com.github.OrangeGangsters.circularbarpager.library.viewpager;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
  * Created by oliviergoutay on 12/9/14.
  */
 public class WrapContentViewPager extends ViewPager {
+
+    private static final String TAG = "WrapContentViewPager";
 
     public WrapContentViewPager(Context context) {
         super(context);
@@ -42,6 +46,42 @@ public class WrapContentViewPager extends ViewPager {
     }
 
     /**
+     * Fixes for "java.lang.IndexOutOfBoundsException Invalid index 0, size is 0"
+     * on "android.support.v4.view.ViewPager.performDrag"
+     */
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        try {
+            if (event == null || getAdapter() == null || getAdapter().getCount() == 0) {
+                return false;
+            }
+            return super.onInterceptTouchEvent(event);
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Exception during WrapContentViewPager onTouchEvent: " +
+                    "index out of bound, or nullpointer even if we check the adapter before " + e.toString());
+            return false;
+        }
+    }
+
+    /**
+     * Fixes for "java.lang.IndexOutOfBoundsException Invalid index 0, size is 0"
+     * on "android.support.v4.view.ViewPager.performDrag"
+     */
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        try {
+            if (ev == null || getAdapter() == null || getAdapter().getCount() == 0) {
+                return false;
+            }
+            return super.onTouchEvent(ev);
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Exception during WrapContentViewPager onTouchEvent: " +
+                    "index out of bound, or nullpointer even if we check the adapter before " + e.toString());
+            return false;
+        }
+    }
+
+    /**
      * Allows to redraw the view size to wrap the content of the bigger child.
      *
      * @param widthMeasureSpec  with measured
@@ -49,23 +89,29 @@ public class WrapContentViewPager extends ViewPager {
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int mode = MeasureSpec.getMode(heightMeasureSpec);
+        try {
+            int mode = MeasureSpec.getMode(heightMeasureSpec);
 
-        if (mode == MeasureSpec.UNSPECIFIED || mode == MeasureSpec.AT_MOST) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            int height = 0;
-            for (int i = 0; i < getChildCount(); i++) {
-                View child = getChildAt(i);
-                child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-                int h = child.getMeasuredHeight();
-                if (h > height) {
-                    height = h;
+            if (mode == MeasureSpec.UNSPECIFIED || mode == MeasureSpec.AT_MOST) {
+                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+                int height = 0;
+                for (int i = 0; i < getChildCount(); i++) {
+                    View child = getChildAt(i);
+                    if (child != null) {
+                        child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+                        int h = child.getMeasuredHeight();
+                        if (h > height) {
+                            height = h;
+                        }
+                    }
                 }
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
             }
-            heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
-        }
 
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Exception during WrapContentViewPager onMeasure " + e.toString());
+        }
     }
 
     @Override

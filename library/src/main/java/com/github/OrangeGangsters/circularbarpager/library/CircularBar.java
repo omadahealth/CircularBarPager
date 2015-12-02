@@ -581,10 +581,12 @@ public class CircularBar extends View implements Animator.AnimatorListener {
      * @return The set with listeners added
      */
     protected AnimatorSet addListenersToSet(AnimatorSet set) {
-        if (mListeners != null && set != null) {
+        if (set != null) {
             set.addListener(this);
-            for (Animator.AnimatorListener listener : mListeners) {
-                set.addListener(listener);
+            if(mListeners != null){
+                for (Animator.AnimatorListener listener : mListeners) {
+                    set.addListener(listener);
+                }
             }
         }
         return set;

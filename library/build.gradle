@@ -1,15 +1,17 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
 
+    dataBinding {
+        enabled = true
+    }
     defaultConfig {
         minSdkVersion 10
         targetSdkVersion 23
-        versionCode 9
-        versionName "1.2.6"
+        versionCode 11
+        versionName "1.2.8"
     }
     buildTypes {
         release {
@@ -25,7 +27,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:appcompat-v7:23.1.1'
     //CirclePageIndicator
     compile 'com.viewpagerindicator:library:2.4.1@aar'
     //Animations and progress value easing
@@ -34,26 +36,26 @@ dependencies {
 }
 
 //gradle clean build uploadArchives
-apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+//apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
 
 
-//task androidSourcesJar(type: Jar) {
-//    classifier = 'sources'
-//    from android.sourceSets.main.java.sourceFiles
-//}
-//artifacts {
-//    archives androidSourcesJar
-//}
-//
-//apply plugin: 'maven'
-//uploadArchives {
-//    repositories {
-//        mavenDeployer {
-//            repository(url: uri("../../omada-nexus/release"))
-//            snapshotRepository(url: uri("../../omada-nexus/release"))
-//            pom.groupId = GROUP
-//            pom.artifactId = POM_ARTIFACT_ID
-//            pom.version = VERSION_NAME
-//        }
-//    }
-//}
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.sourceFiles
+}
+artifacts {
+    archives androidSourcesJar
+}
+
+apply plugin: 'maven'
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri("../../omada-nexus/release"))
+            snapshotRepository(url: uri("../../omada-nexus/release"))
+            pom.groupId = GROUP
+            pom.artifactId = POM_ARTIFACT_ID
+            pom.version = VERSION_NAME
+        }
+    }
+}

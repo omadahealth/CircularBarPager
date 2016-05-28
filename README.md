@@ -8,6 +8,11 @@ To include in your project, add this to your build.gradle file:
 ```
    //CircularBarPager
    compile 'com.github.orangegangsters:library:1.3.4@aar'
+   //CirclePageIndicator
+   compile 'com.viewpagerindicator:library:2.4.1@aar'
+   //Animations and progress value easing
+   compile 'com.nineoldandroids:library:2.4.0'
+   compile 'com.daimajia.easing:library:1.0.1@aar'
 ```
 ![Demo](app/src/main/res/raw/github_gif.gif)
 

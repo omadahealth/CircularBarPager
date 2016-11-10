@@ -51,6 +51,7 @@ import daniel.olivier.stoyan.pager.R;
  * Created by stoyan and olivier on 12/9/14.
  */
 public class CircularBar extends View implements Animator.AnimatorListener {
+
     /**
      * TAG for logging
      */
@@ -105,7 +106,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
     /**
      * The fill mode type for {@link #mCircleFillColor}
      */
-    private int mCircleFillMode;
+    protected int mCircleFillMode;
 
     /**
      * The clockwise width of the reached area
@@ -130,7 +131,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
     /**
      * The Paint of the reached area.
      */
-    private Paint mReachedArcPaint;
+    protected Paint mReachedArcPaint;
 
     /**
      * The Paint of the clockwise reached area.
@@ -145,7 +146,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
     /**
      * The Painter of the outline area.
      */
-    private Paint mOutlineArcPaint;
+    protected Paint mOutlineArcPaint;
 
     /**
      * The Painter of the clockwise outline area.
@@ -160,22 +161,22 @@ public class CircularBar extends View implements Animator.AnimatorListener {
     /**
      * The Painter of the fill circle.
      */
-    private Paint mCircleFillPaint;
+    protected Paint mCircleFillPaint;
 
     /**
      * The reached bar area rect.
      */
-    private RectF mReachedArcRectF = new RectF(0, 0, 0, 0);
+    protected RectF mReachedArcRectF = new RectF(0, 0, 0, 0);
 
     /**
      * The outline bar area
      */
-    private RectF mOutlineArcRectF = new RectF(0, 0, 0, 0);
+    protected RectF mOutlineArcRectF = new RectF(0, 0, 0, 0);
 
     /**
      * The fill circle area
      */
-    private RectF mFillCircleRectF = new RectF(0, 0, 0, 0);
+    protected RectF mFillCircleRectF = new RectF(0, 0, 0, 0);
 
     /**
      * The diameter of the circle that will be drawn. Computed in {@link #getArcRect(float)}
@@ -190,23 +191,23 @@ public class CircularBar extends View implements Animator.AnimatorListener {
     /**
      * Determine if need to draw outline area
      */
-    private boolean mDrawOutlineArc = true;
+    protected boolean mDrawOutlineArc = true;
 
     /**
      * We should always draw reached area
      */
-    private boolean mDrawReachedArc = true;
+    protected boolean mDrawReachedArc = true;
 
     /**
      * Indicates if we need to fill the circle
      */
-    private boolean mCircleFillEnabled = false;
+    protected boolean mCircleFillEnabled = false;
 
     /**
      * The progress angles of the {@link #mOutlineArcRectF} and
      * {@link #mReachedArcRectF}
      */
-    private ProgressSweep mProgressSweep;
+    protected ProgressSweep mProgressSweep;
 
     /**
      * The suffix of the number.
@@ -257,35 +258,35 @@ public class CircularBar extends View implements Animator.AnimatorListener {
     /**
      * The defaults for width and color of the reached and outline arcs
      */
-    private final int default_clockwise_reached_color = Color.parseColor("#00c853");
-    private final int default_clockwise_outline_color = Color.parseColor("#00c853");
+    private final int default_clockwise_reached_color         = Color.parseColor("#00c853");
+    private final int default_clockwise_outline_color         = Color.parseColor("#00c853");
     private final int default_counter_clockwise_reached_color = Color.parseColor("#ffffff");
     private final int default_counter_clockwise_outline_color = Color.parseColor("#ffffff");
-    private final int default_circle_fill_color = Color.parseColor("#00000000");//fully transparent
-    private final int default_circle_fill_mode = CircleFillMode.DEFAULT.getValue();//fully transparent
+    private final int default_circle_fill_color               = Color.parseColor("#00000000");//fully transparent
+    private final int default_circle_fill_mode                = CircleFillMode.DEFAULT.getValue();//fully transparent
     private final float default_reached_arc_width;
     private final float default_outline_arc_width;
 
     /**
      * For save and restore instance of progressbar
      */
-    private static final String INSTANCE_STATE = "saved_instance";
-    private static final String INSTANCE_START_LINE_ENABLED = "progress_start_line_enabled";
-    private static final String INSTANCE_CLOCKWISE_REACHED_BAR_HEIGHT = "clockwise_reached_bar_height";
-    private static final String INSTANCE_CLOCKWISE_REACHED_BAR_COLOR = "clockwise_reached_bar_color";
-    private static final String INSTANCE_CLOCKWISE_OUTLINE_BAR_HEIGHT = "clockwise_outline_bar_height";
-    private static final String INSTANCE_CLOCKWISE_OUTLINE_BAR_COLOR = "clockwise_outline_bar_color";
+    private static final String INSTANCE_STATE                                = "saved_instance";
+    private static final String INSTANCE_START_LINE_ENABLED                   = "progress_start_line_enabled";
+    private static final String INSTANCE_CLOCKWISE_REACHED_BAR_HEIGHT         = "clockwise_reached_bar_height";
+    private static final String INSTANCE_CLOCKWISE_REACHED_BAR_COLOR          = "clockwise_reached_bar_color";
+    private static final String INSTANCE_CLOCKWISE_OUTLINE_BAR_HEIGHT         = "clockwise_outline_bar_height";
+    private static final String INSTANCE_CLOCKWISE_OUTLINE_BAR_COLOR          = "clockwise_outline_bar_color";
     private static final String INSTANCE_COUNTER_CLOCKWISE_REACHED_BAR_HEIGHT = "counter_clockwise_reached_bar_height";
-    private static final String INSTANCE_COUNTER_CLOCKWISE_REACHED_BAR_COLOR = "counter_clockwise_reached_bar_color";
+    private static final String INSTANCE_COUNTER_CLOCKWISE_REACHED_BAR_COLOR  = "counter_clockwise_reached_bar_color";
     private static final String INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_HEIGHT = "counter_clockwise_outline_bar_height";
-    private static final String INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_COLOR = "counter_clockwise_outline_bar_color";
-    private static final String INSTANCE_CIRCLE_FILL_ENABLED = "progress_pager_fill_circle_enabled";
-    private static final String INSTANCE_CIRCLE_FILL_COLOR = "progress_pager_fill_circle_color";
-    private static final String INSTANCE_CIRCLE_FILL_MODE = "progress_pager_fill_mode";
-    private static final String INSTANCE_MAX = "max";
-    private static final String INSTANCE_PROGRESS = "progress";
-    private static final String INSTANCE_SUFFIX = "suffix";
-    private static final String INSTANCE_PREFIX = "prefix";
+    private static final String INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_COLOR  = "counter_clockwise_outline_bar_color";
+    private static final String INSTANCE_CIRCLE_FILL_ENABLED                  = "progress_pager_fill_circle_enabled";
+    private static final String INSTANCE_CIRCLE_FILL_COLOR                    = "progress_pager_fill_circle_color";
+    private static final String INSTANCE_CIRCLE_FILL_MODE                     = "progress_pager_fill_mode";
+    private static final String INSTANCE_MAX                                  = "max";
+    private static final String INSTANCE_PROGRESS                             = "progress";
+    private static final String INSTANCE_SUFFIX                               = "suffix";
+    private static final String INSTANCE_PREFIX                               = "prefix";
 
     public CircularBar(Context context) {
         this(context, null);
@@ -406,7 +407,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
     public void loadStyledAttributes(AttributeSet attrs, int defStyleAttr) {
         if (attrs != null) {
             final TypedArray attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.CircularViewPager,
-                    defStyleAttr, 0);
+                                                                                     defStyleAttr, 0);
 
             mStartLineEnabled = attributes.getBoolean(R.styleable.CircularViewPager_progress_start_line_enabled, true);
 
@@ -465,7 +466,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
      * Calculates the coordinates of {@link #mOutlineArcRectF} and
      * {@link #mReachedArcRectF}
      */
-    private void calculateDrawRectF() {
+    protected void calculateDrawRectF() {
         mFillCircleRectF = getArcRect(mClockwiseReachedArcWidth);
         mReachedArcRectF = getArcRect(mClockwiseReachedArcWidth / 2);
         mOutlineArcRectF = getArcRect(mClockwiseOutlineArcWidth / 2);
@@ -583,7 +584,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
     protected AnimatorSet addListenersToSet(AnimatorSet set) {
         if (set != null) {
             set.addListener(this);
-            if(mListeners != null){
+            if (mListeners != null) {
                 for (Animator.AnimatorListener listener : mListeners) {
                     set.addListener(listener);
                 }
@@ -956,7 +957,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
      * Private class for calculating and holding the sweep angles of the
      * arcs we are drawing
      */
-    private class ProgressSweep {
+    protected class ProgressSweep {
         /*
          * Possible starting positions at 12, 3, 6, and 9 o'clock positions
          *     12
@@ -970,15 +971,15 @@ public class CircularBar extends View implements Animator.AnimatorListener {
         /**
          * 3 o'clock
          */
-        public static final float START_3 = 0f;
+        public static final float START_3  = 0f;
         /**
          * 6 o'clock
          */
-        public static final float START_6 = 90f;
+        public static final float START_6  = 90f;
         /**
          * 9 o'clock
          */
-        public static final float START_9 = 180f;
+        public static final float START_9  = 180f;
 
         /**
          * Starting angle position of the reached arc

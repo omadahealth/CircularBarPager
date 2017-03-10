@@ -27,10 +27,15 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.github.OrangeGangsters.circularbarpager.library.CircularBarPager;
 import com.nineoldandroids.animation.Animator;
 import com.viewpagerindicator.CirclePageIndicator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import daniel.olivier.stoyan.circularbarpager.R;
 
@@ -40,6 +45,9 @@ import daniel.olivier.stoyan.circularbarpager.R;
 public class MainActivity extends Activity {
 
     private CircularBarPager mCircularBarPager;
+    private Button mButton;
+    private EditText mEditText;
+    private int mHowmanypies=3;
 
     /**
      * The animation time in milliseconds that we take to display the steps taken
@@ -56,12 +64,35 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        makeButtonVisible(false);
+
         mCircularBarPager.getCircularBar().animateProgress(0, 75, 1000);
     }
 
+    private void makeButtonVisible(boolean b){
+        if(b) {
+            mButton.setVisibility(View.VISIBLE);
+            mEditText.setVisibility(View.VISIBLE);
+        }else{
+            mButton.setVisibility(View.INVISIBLE);
+            mEditText.setVisibility(View.INVISIBLE);
+        }
+    }
     private void initViews(){
         mCircularBarPager = (CircularBarPager) findViewById(R.id.circularBarPager);
-
+        mButton = (Button) findViewById(R.id.button);
+        mEditText = (EditText) findViewById(R.id.edittext);
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHowmanypies = Integer.parseInt(mEditText.getText().toString());
+                List<Boolean> partsBoolean = new ArrayList<>();
+                for(int i=0; i<mHowmanypies; i++) {
+                    partsBoolean.add(true);
+                }
+                mCircularBarPager.getCircularBar().animateProgress(partsBoolean, BAR_ANIMATION_TIME);
+            }
+        });
         View[] views = new View[3];
         views[0] = new DemoView(this);
         views[1] = new DemoView(this);
@@ -108,13 +139,20 @@ public class MainActivity extends Activity {
                 if(mCircularBarPager!= null && mCircularBarPager.getCircularBar() != null){
                     switch (position){
                         case 0:
+                            makeButtonVisible(false);
                             mCircularBarPager.getCircularBar().animateProgress(-25, 100, BAR_ANIMATION_TIME);
                             break;
                         case 1:
+                            makeButtonVisible(false);
                             mCircularBarPager.getCircularBar().animateProgress(100, -75, BAR_ANIMATION_TIME);
                             break;
                         case 2:
-                            mCircularBarPager.getCircularBar().animateProgress(0,33, BAR_ANIMATION_TIME, true, true, true);
+                            makeButtonVisible(true);
+                            List<Boolean> partsBoolean = new ArrayList<>();
+                            for(int i=0; i<mHowmanypies; i++) {
+                                partsBoolean.add(true);
+                            }
+                            mCircularBarPager.getCircularBar().animateProgress(partsBoolean, BAR_ANIMATION_TIME);
                             break;
                         default:
                             mCircularBarPager.getCircularBar().animateProgress(0, 75, BAR_ANIMATION_TIME);

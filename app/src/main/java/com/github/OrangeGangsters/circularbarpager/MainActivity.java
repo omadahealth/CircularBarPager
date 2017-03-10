@@ -62,9 +62,11 @@ public class MainActivity extends Activity {
     private void initViews(){
         mCircularBarPager = (CircularBarPager) findViewById(R.id.circularBarPager);
 
-        View[] views = new View[2];
+        View[] views = new View[3];
         views[0] = new DemoView(this);
         views[1] = new DemoView(this);
+        views[2] = new DemoView(this);
+
 
         mCircularBarPager.setViewPagerAdapter(new DemoPagerAdapter(this, views));
 
@@ -110,6 +112,9 @@ public class MainActivity extends Activity {
                             break;
                         case 1:
                             mCircularBarPager.getCircularBar().animateProgress(100, -75, BAR_ANIMATION_TIME);
+                            break;
+                        case 2:
+                            mCircularBarPager.getCircularBar().animateProgress(0,33, BAR_ANIMATION_TIME, true, true, true);
                             break;
                         default:
                             mCircularBarPager.getCircularBar().animateProgress(0, 75, BAR_ANIMATION_TIME);

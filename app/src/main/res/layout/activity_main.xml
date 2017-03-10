@@ -1,20 +1,40 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/particiant_bkg">
+    android:background="@drawable/particiant_bkg"
+    android:orientation="vertical">
 
     <com.github.OrangeGangsters.circularbarpager.library.CircularBarPager
         android:id="@+id/circularBarPager"
-        android:layout_height="match_parent"
+        style="@style/CircularBarPager_Default"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
-        android:layout_centerInParent="true"
         app:progress_pager_fill_circle_color="@android:color/transparent"
-        app:progress_pager_fill_mode="pie_mode"
-        style="@style/CircularBarPager_Default"/>
+        app:progress_pager_fill_mode="pie_mode" />
+
+
+    <RelativeLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <EditText
+            android:id="@+id/edittext"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:inputType="number"/>
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/edittext"
+            android:text="UPDATE"/>
+    </RelativeLayout>
 
 </RelativeLayout>

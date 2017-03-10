@@ -33,6 +33,7 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.daimajia.easing.Glider;
@@ -41,6 +42,7 @@ import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -204,10 +206,22 @@ public class CircularBar extends View implements Animator.AnimatorListener {
     protected boolean mCircleFillEnabled = false;
 
     /**
+     * How many equal parts the circle arc should be divided into
+     */
+
+    protected List<Boolean> mCirclePieceFillList;
+
+    /**
      * The progress angles of the {@link #mOutlineArcRectF} and
      * {@link #mReachedArcRectF}
      */
     protected ProgressSweep mProgressSweep;
+
+    /**
+     * The list progress angles of the {@link #mOutlineArcRectF} and
+     * {@link #mReachedArcRectF}
+     */
+    protected List<ProgressSweep> mProgressSweepList;
 
     /**
      * The suffix of the number.
@@ -253,44 +267,47 @@ public class CircularBar extends View implements Animator.AnimatorListener {
                     return DEFAULT;
             }
         }
+
     }
 
     /**
      * The defaults for width and color of the reached and outline arcs
      */
-    private final int default_clockwise_reached_color         = Color.parseColor("#00c853");
-    private final int default_clockwise_outline_color         = Color.parseColor("#00c853");
+    private final int default_clockwise_reached_color = Color.parseColor("#00c853");
+
+    private final int default_clockwise_outline_color = Color.parseColor("#00c853");
     private final int default_counter_clockwise_reached_color = Color.parseColor("#ffffff");
     private final int default_counter_clockwise_outline_color = Color.parseColor("#ffffff");
-    private final int default_circle_fill_color               = Color.parseColor("#00000000");//fully transparent
-    private final int default_circle_fill_mode                = CircleFillMode.DEFAULT.getValue();//fully transparent
+    private final int default_circle_fill_color = Color.parseColor("#00000000");//fully transparent
+    private final int default_circle_fill_mode = CircleFillMode.DEFAULT.getValue();//fully transparent
     private final float default_reached_arc_width;
     private final float default_outline_arc_width;
-
     /**
      * For save and restore instance of progressbar
      */
-    private static final String INSTANCE_STATE                                = "saved_instance";
-    private static final String INSTANCE_START_LINE_ENABLED                   = "progress_start_line_enabled";
-    private static final String INSTANCE_CLOCKWISE_REACHED_BAR_HEIGHT         = "clockwise_reached_bar_height";
-    private static final String INSTANCE_CLOCKWISE_REACHED_BAR_COLOR          = "clockwise_reached_bar_color";
-    private static final String INSTANCE_CLOCKWISE_OUTLINE_BAR_HEIGHT         = "clockwise_outline_bar_height";
-    private static final String INSTANCE_CLOCKWISE_OUTLINE_BAR_COLOR          = "clockwise_outline_bar_color";
+    private static final String INSTANCE_STATE = "saved_instance";
+
+    private static final String INSTANCE_START_LINE_ENABLED = "progress_start_line_enabled";
+    private static final String INSTANCE_CLOCKWISE_REACHED_BAR_HEIGHT = "clockwise_reached_bar_height";
+    private static final String INSTANCE_CLOCKWISE_REACHED_BAR_COLOR = "clockwise_reached_bar_color";
+    private static final String INSTANCE_CLOCKWISE_OUTLINE_BAR_HEIGHT = "clockwise_outline_bar_height";
+    private static final String INSTANCE_CLOCKWISE_OUTLINE_BAR_COLOR = "clockwise_outline_bar_color";
     private static final String INSTANCE_COUNTER_CLOCKWISE_REACHED_BAR_HEIGHT = "counter_clockwise_reached_bar_height";
-    private static final String INSTANCE_COUNTER_CLOCKWISE_REACHED_BAR_COLOR  = "counter_clockwise_reached_bar_color";
+    private static final String INSTANCE_COUNTER_CLOCKWISE_REACHED_BAR_COLOR = "counter_clockwise_reached_bar_color";
     private static final String INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_HEIGHT = "counter_clockwise_outline_bar_height";
-    private static final String INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_COLOR  = "counter_clockwise_outline_bar_color";
-    private static final String INSTANCE_CIRCLE_FILL_ENABLED                  = "progress_pager_fill_circle_enabled";
-    private static final String INSTANCE_CIRCLE_FILL_COLOR                    = "progress_pager_fill_circle_color";
-    private static final String INSTANCE_CIRCLE_FILL_MODE                     = "progress_pager_fill_mode";
-    private static final String INSTANCE_MAX                                  = "max";
-    private static final String INSTANCE_PROGRESS                             = "progress";
-    private static final String INSTANCE_SUFFIX                               = "suffix";
-    private static final String INSTANCE_PREFIX                               = "prefix";
+    private static final String INSTANCE_COUNTER_CLOCKWISE_OUTLINE_BAR_COLOR = "counter_clockwise_outline_bar_color";
+    private static final String INSTANCE_CIRCLE_FILL_ENABLED = "progress_pager_fill_circle_enabled";
+    private static final String INSTANCE_CIRCLE_FILL_COLOR = "progress_pager_fill_circle_color";
+    private static final String INSTANCE_CIRCLE_FILL_MODE = "progress_pager_fill_mode";
+    private static final String INSTANCE_MAX = "max";
+    private static final String INSTANCE_PROGRESS = "progress";
+    private static final String INSTANCE_SUFFIX = "suffix";
+    private static final String INSTANCE_PREFIX = "prefix";
 
     public CircularBar(Context context) {
         this(context, null);
     }
+
 
     public CircularBar(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -308,6 +325,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
         loadStyledAttributes(attrs, defStyleAttr);
     }
 
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(measure(widthMeasureSpec, true), measure(heightMeasureSpec, false));
@@ -318,34 +336,50 @@ public class CircularBar extends View implements Animator.AnimatorListener {
         calculateDrawRectF();
 
         //Draw the fill first so that it does not overlap the arcs
-        if (mCircleFillEnabled) {
-            switch (CircleFillMode.getMode(mCircleFillMode)) {
-                case PIE:
-                    //Fill the circle to the point of the reached sweep
-                    canvas.drawArc(mFillCircleRectF, mProgressSweep.reachedStart, mProgressSweep.reachedSweep, true, mCircleFillPaint);
-                    break;
-                case DEFAULT:
-                default:
-                    //Fill the circle as a background
-                    canvas.drawArc(mOutlineArcRectF, ProgressSweep.START_12, 360f, true, mCircleFillPaint);
-                    break;
+        if (mCirclePieceFillList != null && mProgressSweepList != null) {
+            if (mCircleFillEnabled) {
+                switch (CircleFillMode.getMode(mCircleFillMode)) {
+                    case PIE:
+                        //Fill the circle to the point of the reached sweep
+                        for (int index = 0; index < mCirclePieceFillList.size(); index++) {
+                            ProgressSweep progressSweep = mProgressSweepList.get(index);
+                            canvas.drawArc(mFillCircleRectF, progressSweep.reachedStart, progressSweep.reachedSweep, true, mCircleFillPaint);
+                        }
+                        break;
+                    case DEFAULT:
+                    default:
+                        //Fill the circle as a background
+                        canvas.drawArc(mOutlineArcRectF, ProgressSweep.START_12, 360f, true, mCircleFillPaint);
+                        break;
+                }
+            }
+
+            //Draw the outline arc
+            if (mDrawOutlineArc) {
+                //Draw the outline bar
+                for (int index = 0; index < mCirclePieceFillList.size(); index++) {
+                    ProgressSweep progressSweep = mProgressSweepList.get(index);
+                    canvas.drawArc(mOutlineArcRectF, progressSweep.outlineStart, progressSweep.outlineSweep, false, mOutlineArcPaint);
+                }
+
+            }
+
+            //Draw the reached arc last so its always on top
+            if (mDrawReachedArc) {
+                //Draw the bar
+                for (int index = 0; index < mCirclePieceFillList.size(); index++) {
+                    if (mCirclePieceFillList.get(index)) {
+                        ProgressSweep progressSweep = mProgressSweepList.get(index);
+                        canvas.drawArc(mReachedArcRectF, progressSweep.reachedStart, progressSweep.reachedSweep, false, mReachedArcPaint);
+                    }
+
+                }
             }
         }
 
-        //Draw the outline arc
-        if (mDrawOutlineArc) {
-            //Draw the outline bar
-            canvas.drawArc(mOutlineArcRectF, mProgressSweep.outlineStart, mProgressSweep.outlineSweep, false, mOutlineArcPaint);
-        }
-
-        //Draw the reached arc last so its always on top
-        if (mDrawReachedArc) {
-            //Draw the bar
-            canvas.drawArc(mReachedArcRectF, mProgressSweep.reachedStart, mProgressSweep.reachedSweep, false, mReachedArcPaint);
-            if (mStartLineEnabled) {
-                //Draw the bar start line
-                canvas.drawLine(mReachedArcRectF.centerX(), mReachedArcRectF.top - mClockwiseReachedArcWidth / 2, mReachedArcRectF.centerX() + 1, mReachedArcRectF.top + mClockwiseReachedArcWidth * 1.5f, mOutlineArcPaint);
-            }
+        if (mStartLineEnabled) {
+            //Draw the bar start line
+            canvas.drawLine(mReachedArcRectF.centerX(), mReachedArcRectF.top - mClockwiseReachedArcWidth / 2, mReachedArcRectF.centerX() + 1, mReachedArcRectF.top + mClockwiseReachedArcWidth * 1.5f, mOutlineArcPaint);
         }
     }
 
@@ -407,7 +441,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
     public void loadStyledAttributes(AttributeSet attrs, int defStyleAttr) {
         if (attrs != null) {
             final TypedArray attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.CircularViewPager,
-                                                                                     defStyleAttr, 0);
+                    defStyleAttr, 0);
 
             mStartLineEnabled = attributes.getBoolean(R.styleable.CircularViewPager_progress_start_line_enabled, true);
 
@@ -544,8 +578,10 @@ public class CircularBar extends View implements Animator.AnimatorListener {
     @Override
     public void onAnimationEnd(Animator animation) {
         //Round off the sweep angles that can result from rounding errors at the end
-        mProgressSweep.reachedSweep = Math.round(mProgressSweep.reachedSweep);
-        mProgressSweep.outlineSweep = Math.round(mProgressSweep.outlineSweep);
+        for (ProgressSweep progressSweep : mProgressSweepList) {
+            progressSweep.reachedSweep = Math.round(progressSweep.reachedSweep);
+            progressSweep.outlineSweep = Math.round(progressSweep.outlineSweep);
+        }
         invalidate();
     }
 
@@ -567,8 +603,25 @@ public class CircularBar extends View implements Animator.AnimatorListener {
      * @param duration The the time to run the animation over
      */
     public void animateProgress(int start, int end, int duration) {
+        List<Boolean> list = new ArrayList<>();
+        list.add(true);
+        mCirclePieceFillList = list;
         AnimatorSet set = new AnimatorSet();
         set.playTogether(Glider.glide(Skill.QuadEaseInOut, duration, ObjectAnimator.ofFloat(this, "progress", start, end)));
+        set.setDuration(duration);
+        set = addListenersToSet(set);
+        set.start();
+    }
+
+    /**
+     * Animate the change in progress of this view
+     *
+     * @param duration The the time to run the animation over
+     */
+    public void animateProgress(List<Boolean> circlePieceFillList, int duration) {
+        mCirclePieceFillList = circlePieceFillList;
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(Glider.glide(Skill.QuadEaseInOut, duration, ObjectAnimator.ofFloat(this, "progress", 0, 100)));
         set.setDuration(duration);
         set = addListenersToSet(set);
         set.start();
@@ -592,6 +645,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
         }
         return set;
     }
+
 
     /**
      * Method to add a listener to call on animations
@@ -921,14 +975,24 @@ public class CircularBar extends View implements Animator.AnimatorListener {
      * @param newProgress
      */
     public void setProgress(float newProgress) {
-        if (mProgressSweep == null) {
-            this.mProgressSweep = new ProgressSweep(newProgress);
-        } else {
-            mProgressSweep.enforceBounds(newProgress);
-            mProgressSweep.updateAngles();
+        if (mCirclePieceFillList != null && mCirclePieceFillList.size() > 0) {
+            if (mProgressSweepList == null || mProgressSweepList.size() != mCirclePieceFillList.size()) {
+                mProgressSweepList = new ArrayList<>();
+                for (int ps = 0; ps < mCirclePieceFillList.size(); ps++) {
+                    //ProgressSweep progressSweep = new ProgressSweep(newProgress, ps);
+                    mProgressSweepList.add(new ProgressSweep(newProgress, ps));
+                }
+            } else {
+                mProgressSweepList.get(0).enforceBounds(newProgress);
+                for (int ps = 0; ps < mCirclePieceFillList.size(); ps++) {
+                    if (mProgressSweepList.get(ps) == null) {
+                        mProgressSweepList.set(ps, new ProgressSweep(newProgress, ps));
+                    }
+                    mProgressSweepList.get(ps).updateAngles(ps);
+                }
+            }
+            invalidate();
         }
-
-        invalidate();
     }
 
     /**
@@ -971,15 +1035,15 @@ public class CircularBar extends View implements Animator.AnimatorListener {
         /**
          * 3 o'clock
          */
-        public static final float START_3  = 0f;
+        public static final float START_3 = 0f;
         /**
          * 6 o'clock
          */
-        public static final float START_6  = 90f;
+        public static final float START_6 = 90f;
         /**
          * 9 o'clock
          */
-        public static final float START_9  = 180f;
+        public static final float START_9 = 180f;
 
         /**
          * Starting angle position of the reached arc
@@ -1001,9 +1065,9 @@ public class CircularBar extends View implements Animator.AnimatorListener {
          */
         public float outlineSweep = 360f;
 
-        public ProgressSweep(float progress) {
+        public ProgressSweep(float progress, int i) {
             enforceBounds(progress);
-            updateAngles();
+            updateAngles(i);
         }
 
         /**
@@ -1019,12 +1083,13 @@ public class CircularBar extends View implements Animator.AnimatorListener {
         /**
          * Update the angles of the arcs
          */
-        public void updateAngles() {
+        public void updateAngles(int piecePosition) {
             if (progress >= 0) {
-                reachedStart = START_12;
-                reachedSweep = progress / mMax * 360f;
-                outlineStart = (START_12 + reachedSweep) % 360f;
-                outlineSweep = 360f - reachedSweep;
+                int numPiece = mCirclePieceFillList.size();
+                reachedStart = (START_12 + ((360f / numPiece) * piecePosition)) % 360f;
+                reachedSweep = (progress / mMax * 360f) / numPiece;
+                outlineStart = (reachedStart + reachedSweep) % 360f;
+                outlineSweep = (360f / numPiece) - reachedSweep;
 
                 //paints
                 mReachedArcPaint = mClockwiseReachedArcPaint;

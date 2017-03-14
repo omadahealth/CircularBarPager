@@ -376,7 +376,6 @@ public class CircularBar extends View implements Animator.AnimatorListener {
                 }
             }
         }
-
         if (mStartLineEnabled) {
             //Draw the bar start line
             canvas.drawLine(mReachedArcRectF.centerX(), mReachedArcRectF.top - mClockwiseReachedArcWidth / 2, mReachedArcRectF.centerX() + 1, mReachedArcRectF.top + mClockwiseReachedArcWidth * 1.5f, mOutlineArcPaint);
@@ -606,6 +605,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
         List<Boolean> list = new ArrayList<>();
         list.add(true);
         mCirclePieceFillList = list;
+        setProgress(0);
         AnimatorSet set = new AnimatorSet();
         set.playTogether(Glider.glide(Skill.QuadEaseInOut, duration, ObjectAnimator.ofFloat(this, "progress", start, end)));
         set.setDuration(duration);
@@ -979,7 +979,6 @@ public class CircularBar extends View implements Animator.AnimatorListener {
             if (mProgressSweepList == null || mProgressSweepList.size() != mCirclePieceFillList.size()) {
                 mProgressSweepList = new ArrayList<>();
                 for (int ps = 0; ps < mCirclePieceFillList.size(); ps++) {
-                    //ProgressSweep progressSweep = new ProgressSweep(newProgress, ps);
                     mProgressSweepList.add(new ProgressSweep(newProgress, ps));
                 }
             } else {
@@ -988,11 +987,18 @@ public class CircularBar extends View implements Animator.AnimatorListener {
                     if (mProgressSweepList.get(ps) == null) {
                         mProgressSweepList.set(ps, new ProgressSweep(newProgress, ps));
                     }
-                    mProgressSweepList.get(ps).updateAngles(ps);
+                    if(mCirclePieceFillList.get(ps)) {
+                        mProgressSweepList.get(ps).updateAngles(ps);
+                    }
                 }
             }
-            invalidate();
+        } else {
+            mCirclePieceFillList = new ArrayList<>();
+            mProgressSweepList = new ArrayList<>();
+            mCirclePieceFillList.add(false);
+            mProgressSweepList.add(new ProgressSweep(0, 0));
         }
+        invalidate();
     }
 
     /**

@@ -205,6 +205,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
      */
     protected boolean mCircleFillEnabled = false;
 
+
     /**
      * How many equal parts the circle arc should be divided into
      */
@@ -368,15 +369,11 @@ public class CircularBar extends View implements Animator.AnimatorListener {
             if (mDrawReachedArc) {
                 //Draw the bar
                 for (int index = 0; index < mCirclePieceFillList.size(); index++) {
-                    if (mCirclePieceFillList.get(index)) {
-                        ProgressSweep progressSweep = mProgressSweepList.get(index);
-                        canvas.drawArc(mReachedArcRectF, progressSweep.reachedStart, progressSweep.reachedSweep, false, mReachedArcPaint);
-                    }
-
+                    ProgressSweep progressSweep = mProgressSweepList.get(index);
+                    canvas.drawArc(mReachedArcRectF, progressSweep.reachedStart, progressSweep.reachedSweep, false, mReachedArcPaint);
                 }
             }
         }
-
         if (mStartLineEnabled) {
             //Draw the bar start line
             canvas.drawLine(mReachedArcRectF.centerX(), mReachedArcRectF.top - mClockwiseReachedArcWidth / 2, mReachedArcRectF.centerX() + 1, mReachedArcRectF.top + mClockwiseReachedArcWidth * 1.5f, mOutlineArcPaint);
@@ -606,6 +603,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
         List<Boolean> list = new ArrayList<>();
         list.add(true);
         mCirclePieceFillList = list;
+        setProgress(0);
         AnimatorSet set = new AnimatorSet();
         set.playTogether(Glider.glide(Skill.QuadEaseInOut, duration, ObjectAnimator.ofFloat(this, "progress", start, end)));
         set.setDuration(duration);
@@ -734,6 +732,15 @@ public class CircularBar extends View implements Animator.AnimatorListener {
      */
     public float getProgress() {
         return progress;
+    }
+
+    /**
+     * The current reached state for each arc
+     *
+     * @return
+     */
+    public List<Boolean> getCirclePieceFillList() {
+        return mCirclePieceFillList;
     }
 
     /**
@@ -979,7 +986,6 @@ public class CircularBar extends View implements Animator.AnimatorListener {
             if (mProgressSweepList == null || mProgressSweepList.size() != mCirclePieceFillList.size()) {
                 mProgressSweepList = new ArrayList<>();
                 for (int ps = 0; ps < mCirclePieceFillList.size(); ps++) {
-                    //ProgressSweep progressSweep = new ProgressSweep(newProgress, ps);
                     mProgressSweepList.add(new ProgressSweep(newProgress, ps));
                 }
             } else {
@@ -991,8 +997,13 @@ public class CircularBar extends View implements Animator.AnimatorListener {
                     mProgressSweepList.get(ps).updateAngles(ps);
                 }
             }
-            invalidate();
+        } else {
+            mCirclePieceFillList = new ArrayList<>();
+            mProgressSweepList = new ArrayList<>();
+            mCirclePieceFillList.add(false);
+            mProgressSweepList.add(new ProgressSweep(0, 0));
         }
+        invalidate();
     }
 
     /**
@@ -1086,11 +1097,17 @@ public class CircularBar extends View implements Animator.AnimatorListener {
         public void updateAngles(int piecePosition) {
             if (progress >= 0) {
                 int numPiece = mCirclePieceFillList.size();
-                reachedStart = (START_12 + ((360f / numPiece) * piecePosition)) % 360f;
-                reachedSweep = (progress / mMax * 360f) / numPiece;
-                outlineStart = (reachedStart + reachedSweep) % 360f;
-                outlineSweep = (360f / numPiece) - reachedSweep;
-
+                if (mCirclePieceFillList.get(piecePosition)) {
+                    reachedStart = (START_12 + ((360f / numPiece) * piecePosition)) % 360f;
+                    reachedSweep = (progress / mMax * 360f) / numPiece;
+                    outlineStart = (reachedStart + reachedSweep) % 360f;
+                    outlineSweep = (360f / numPiece) - reachedSweep;
+                } else {
+                    reachedStart = (START_12 + ((360f / numPiece) * piecePosition)) % 360f;
+                    reachedSweep = 0;
+                    outlineStart = (reachedStart + reachedSweep) % 360f;
+                    outlineSweep = 360f / numPiece;
+                }
                 //paints
                 mReachedArcPaint = mClockwiseReachedArcPaint;
                 mOutlineArcPaint = mClockwiseOutlineArcPaint;

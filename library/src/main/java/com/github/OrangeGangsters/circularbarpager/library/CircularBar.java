@@ -205,6 +205,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
      */
     protected boolean mCircleFillEnabled = false;
 
+
     /**
      * How many equal parts the circle arc should be divided into
      */
@@ -368,11 +369,8 @@ public class CircularBar extends View implements Animator.AnimatorListener {
             if (mDrawReachedArc) {
                 //Draw the bar
                 for (int index = 0; index < mCirclePieceFillList.size(); index++) {
-                    if (mCirclePieceFillList.get(index)) {
-                        ProgressSweep progressSweep = mProgressSweepList.get(index);
-                        canvas.drawArc(mReachedArcRectF, progressSweep.reachedStart, progressSweep.reachedSweep, false, mReachedArcPaint);
-                    }
-
+                    ProgressSweep progressSweep = mProgressSweepList.get(index);
+                    canvas.drawArc(mReachedArcRectF, progressSweep.reachedStart, progressSweep.reachedSweep, false, mReachedArcPaint);
                 }
             }
         }
@@ -737,6 +735,15 @@ public class CircularBar extends View implements Animator.AnimatorListener {
     }
 
     /**
+     * The current reached state for each arc
+     *
+     * @return
+     */
+    public List<Boolean> getCirclePieceFillList() {
+        return mCirclePieceFillList;
+    }
+
+    /**
      * Get the max of the reached arc, defaults to 100
      *
      * @return
@@ -987,9 +994,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
                     if (mProgressSweepList.get(ps) == null) {
                         mProgressSweepList.set(ps, new ProgressSweep(newProgress, ps));
                     }
-                    if(mCirclePieceFillList.get(ps)) {
-                        mProgressSweepList.get(ps).updateAngles(ps);
-                    }
+                    mProgressSweepList.get(ps).updateAngles(ps);
                 }
             }
         } else {
@@ -1092,11 +1097,17 @@ public class CircularBar extends View implements Animator.AnimatorListener {
         public void updateAngles(int piecePosition) {
             if (progress >= 0) {
                 int numPiece = mCirclePieceFillList.size();
-                reachedStart = (START_12 + ((360f / numPiece) * piecePosition)) % 360f;
-                reachedSweep = (progress / mMax * 360f) / numPiece;
-                outlineStart = (reachedStart + reachedSweep) % 360f;
-                outlineSweep = (360f / numPiece) - reachedSweep;
-
+                if (mCirclePieceFillList.get(piecePosition)) {
+                    reachedStart = (START_12 + ((360f / numPiece) * piecePosition)) % 360f;
+                    reachedSweep = (progress / mMax * 360f) / numPiece;
+                    outlineStart = (reachedStart + reachedSweep) % 360f;
+                    outlineSweep = (360f / numPiece) - reachedSweep;
+                } else {
+                    reachedStart = (START_12 + ((360f / numPiece) * piecePosition)) % 360f;
+                    reachedSweep = 0;
+                    outlineStart = (reachedStart + reachedSweep) % 360f;
+                    outlineSweep = 360f / numPiece;
+                }
                 //paints
                 mReachedArcPaint = mClockwiseReachedArcPaint;
                 mOutlineArcPaint = mClockwiseOutlineArcPaint;

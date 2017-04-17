@@ -14,6 +14,18 @@ To include in your project, add this to your build.gradle file:
    compile 'com.nineoldandroids:library:2.4.0'
    compile 'com.daimajia.easing:library:1.0.1@aar'
 ```
+
+Starting from version 1.3.10, we are moving to a new package name:(readme will get updated for the new version soon!)
+```
+   //CircularBarPager
+   compile 'com.github.omadahealth:library:1.3.10@aar'
+   //CirclePageIndicator
+   compile 'com.viewpagerindicator:library:2.4.1@aar'
+   //Animations and progress value easing
+   compile 'com.nineoldandroids:library:2.4.0'
+   compile 'com.daimajia.easing:library:1.0.1@aar'
+```
+
 ![Demo](app/src/main/res/raw/github_gif.gif)
 
 ========

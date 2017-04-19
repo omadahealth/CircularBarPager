@@ -15,7 +15,7 @@ To include in your project, add this to your build.gradle file:
    compile 'com.daimajia.easing:library:1.0.1@aar'
 ```
 
-Starting from version 1.3.10, we are moving to a new package name:(readme will get updated for the new version soon!)
+Starting from version 1.3.10, we are moving to a new package name (we skipped from 1.3.4 to 1.3.10):
 ```
    //CircularBarPager
    compile 'com.github.omadahealth:library:1.3.10@aar'

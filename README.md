@@ -18,7 +18,7 @@ To include in your project, add this to your build.gradle file:
 Starting from version 1.3.10, we are moving to a new package name (we skipped from 1.3.4 to 1.3.10):
 ```
    //CircularBarPager
-   compile 'com.github.omadahealth:library:1.3.10@aar'
+   compile 'com.github.omadahealth:library:1.3.11@aar'
    //CirclePageIndicator
    compile 'com.viewpagerindicator:library:2.4.1@aar'
    //Animations and progress value easing

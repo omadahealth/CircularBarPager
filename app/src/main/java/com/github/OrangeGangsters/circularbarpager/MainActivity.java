@@ -25,6 +25,7 @@ package com.github.OrangeGangsters.circularbarpager;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
@@ -105,9 +106,9 @@ public class MainActivity extends Activity {
         viewPager.setClipToPadding(true);
 
         CirclePageIndicator circlePageIndicator = mCircularBarPager.getCirclePageIndicator();
-        circlePageIndicator.setFillColor(getResources().getColor(R.color.light_grey));
-        circlePageIndicator.setPageColor(getResources().getColor(R.color.very_light_grey));
-        circlePageIndicator.setStrokeColor(getResources().getColor(R.color.transparent));
+        circlePageIndicator.setFillColor(ContextCompat.getColor(this, R.color.light_grey));
+        circlePageIndicator.setPageColor(ContextCompat.getColor(this,R.color.very_light_grey));
+        circlePageIndicator.setStrokeColor(ContextCompat.getColor(this,R.color.transparent));
 
         //Do stuff based on animation
         mCircularBarPager.addListener(new Animator.AnimatorListener() {

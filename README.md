@@ -11,8 +11,7 @@ To include in your project, add this to your build.gradle file:
    //CirclePageIndicator
    compile 'com.viewpagerindicator:library:2.4.1@aar'
    //Animations and progress value easing
-   compile 'com.nineoldandroids:library:2.4.0'
-   compile 'com.daimajia.easing:library:1.0.1@aar'
+   compile 'com.daimajia.easing:library:2.1@aar'
 ```
 
 Starting from version 1.3.10, we are moving to a new package name (we skipped from 1.3.4 to 1.3.10):
@@ -22,8 +21,7 @@ Starting from version 1.3.10, we are moving to a new package name (we skipped fr
    //CirclePageIndicator
    compile 'com.viewpagerindicator:library:2.4.1@aar'
    //Animations and progress value easing
-   compile 'com.nineoldandroids:library:2.4.0'
-   compile 'com.daimajia.easing:library:1.0.1@aar'
+   compile 'com.daimajia.easing:library:2.1@aar'
 ```
 
 ![Demo](app/src/main/res/raw/github_gif.gif)
@@ -55,7 +53,7 @@ allprojects {
 #### In XML:
 
 ```
-<com.github.OrangeGangsters.circularbarpager.library.CircularBarPager
+<com.github.omadahealth.circularbarpager.library.CircularBarPager
         android:id="@+id/circularBarPager"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
@@ -125,7 +123,6 @@ CirclePageIndicator circlePageIndicator = mCircularBarPager.getCirclePageIndicat
 ### Credits
 
 * We used ViewPagerIndicator from JakeWharton (https://github.com/JakeWharton/ViewPagerIndicator) for the page indicator at the bottom of the CircularBarPager
-* We used NineOldAndroids from JakeWharton (https://github.com/JakeWharton/NineOldAndroids/) to use beautiful animations on API 10+
 * We used AnimationEasingFunctions from daimajia (https://github.com/daimajia/AnimationEasingFunctions) to also use beautiful animations on API 10+
 
 ========
@@ -135,7 +132,7 @@ CirclePageIndicator circlePageIndicator = mCircularBarPager.getCirclePageIndicat
 ```
 The MIT License (MIT)
 
-Copyright (c) 2015 OrangeGangsters
+Copyright (c) 2017 Omada Health
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

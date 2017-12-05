@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.OrangeGangsters.circularbarpager;
+package com.github.omadahealth.circularbarpager;
 
 import android.content.Context;
 import android.view.LayoutInflater;

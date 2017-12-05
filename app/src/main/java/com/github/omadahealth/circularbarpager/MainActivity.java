@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.OrangeGangsters.circularbarpager;
+package com.github.omadahealth.circularbarpager;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -31,8 +31,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.github.OrangeGangsters.circularbarpager.library.CircularBarPager;
-import com.nineoldandroids.animation.Animator;
+import com.github.omadahealth.circularbarpager.library.CircularBarPager;
+import android.animation.Animator;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;

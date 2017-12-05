@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.OrangeGangsters.circularbarpager.library;
+package com.github.omadahealth.circularbarpager.library;
 
 
 import android.content.Context;
@@ -38,9 +38,9 @@ import android.view.View;
 
 import com.daimajia.easing.Glider;
 import com.daimajia.easing.Skill;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorSet;
-import com.nineoldandroids.animation.ObjectAnimator;
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -242,7 +242,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
     /**
      * The different types of fill color.
      * Default is like a background from 0-360 degrees,
-     * Pie is from 0 to the {@link com.github.OrangeGangsters.circularbarpager.library.CircularBar.ProgressSweep}
+     * Pie is from 0 to the {@link com.github.omadahealth.circularbarpager.library.CircularBar.ProgressSweep}
      * of the {@link #mReachedArcPaint}
      */
     public enum CircleFillMode {
@@ -626,7 +626,7 @@ public class CircularBar extends View implements Animator.AnimatorListener {
     }
 
     /**
-     * Adds the current listeners to the {@link com.nineoldandroids.animation.AnimatorSet}
+     * Adds the current listeners to the {@link android.animation.AnimatorSet}
      * before animation starts
      *
      * @param set The set to add listeners to

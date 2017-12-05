@@ -5,7 +5,7 @@
     android:background="@drawable/particiant_bkg"
     android:orientation="vertical">
 
-    <com.github.OrangeGangsters.circularbarpager.library.CircularBarPager
+    <com.github.omadahealth.circularbarpager.library.CircularBarPager
         android:id="@+id/circularBarPager"
         style="@style/CircularBarPager_Default"
         android:layout_width="match_parent"

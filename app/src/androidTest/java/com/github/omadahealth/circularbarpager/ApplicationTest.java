@@ -1,4 +1,4 @@
-package com.github.OrangeGangsters.circularbarpager;
+package com.github.omadahealth.circularbarpager;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
